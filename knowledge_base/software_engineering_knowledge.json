@@ -1,0 +1,97 @@
+{
+  "category": "软件工程知识库",
+  "description": "包含设计模式、代码重构、测试驱动开发、敏捷开发等详细技术知识",
+  "knowledge_base": {
+    "design_patterns": {
+      "title": "设计模式",
+      "content": [
+        {
+          "topic": "创建型模式",
+          "detail": "创建型模式关注对象创建机制。单例模式（Singleton）：确保类只有一个实例，如配置管理器、连接池。工厂模式（Factory）：定义创建对象的接口，由子类决定实例化哪个类。抽象工厂（Abstract Factory）：创建相关对象家族。建造者模式（Builder）：分步骤构建复杂对象，如StringBuilder。原型模式（Prototype）：通过复制现有对象创建新对象。",
+          "key_points": ["单例模式", "工厂模式", "建造者模式", "原型模式"]
+        },
+        {
+          "topic": "结构型模式",
+          "detail": "结构型模式关注类和对象的组合。适配器模式（Adapter）：将不兼容接口转换为兼容接口。装饰器模式（Decorator）：动态添加功能，如Java IO流。代理模式（Proxy）：控制对象访问，如远程代理、虚拟代理。外观模式（Facade）：简化复杂系统接口。桥接模式（Bridge）：分离抽象和实现。组合模式（Composite）：树形结构，如文件系统。享元模式（Flyweight）：共享细粒度对象。",
+          "key_points": ["适配器模式", "装饰器模式", "代理模式", "外观模式"]
+        },
+        {
+          "topic": "行为型模式",
+          "detail": "行为型模式关注对象间通信。观察者模式（Observer）：订阅-通知机制，如事件监听。策略模式（Strategy）：定义算法族，可互相替换。模板方法（Template Method）：定义算法骨架，子类实现细节。命令模式（Command）：将请求封装为对象。迭代器模式（Iterator）：顺序访问集合元素。责任链模式（Chain of Responsibility）：传递请求直到处理。状态模式（State）：对象行为随状态改变。",
+          "key_points": ["观察者模式", "策略模式", "模板方法", "责任链模式"]
+        }
+      ]
+    },
+    "refactoring": {
+      "title": "代码重构",
+      "content": [
+        {
+          "topic": "重构原则",
+          "detail": "重构是在不改变外部行为的前提下改进代码内部结构。原则：小步前进、频繁测试、代码异味识别。代码异味：过长函数、过大类、重复代码、过长参数列表、发散式变化、霰弹式修改、依恋情结、数据泥团、基本类型偏执、 switch惊悚现身、平行继承体系、冗赘类、夸夸其谈未来性、令人迷惑的暂时字段、过度耦合的消息链、中间人、狎昵关系、异曲同工的类、不完美的库类、纯稚的数据类、被拒绝的遗赠、过多的注释。",
+          "key_points": ["重构定义", "小步前进", "代码异味", "测试保护"]
+        },
+        {
+          "topic": "重构手法",
+          "detail": "常用重构手法：提取函数（Extract Method）、内联函数（Inline Method）、提取变量（Extract Variable）、内联变量（Inline Variable）、改变函数声明（Change Function Declaration）、封装变量（Encapsulate Variable）、引入参数对象（Introduce Parameter Object）、函数组合成类（Combine Functions into Class）、拆分阶段（Split Phase）、移动语句（Slide Statements）、拆分循环（Split Loop）、以管道取代循环（Replace Loop with Pipeline）。",
+          "key_points": ["提取函数", "改变声明", "封装变量", "管道操作"]
+        }
+      ]
+    },
+    "tdd": {
+      "title": "测试驱动开发",
+      "content": [
+        {
+          "topic": "TDD原则",
+          "detail": "测试驱动开发（TDD）是测试先于实现的开发方式。TDD循环：编写失败测试（Red）→编写最少代码通过测试（Green）→重构代码（Refactor）。优势：明确需求、快速反馈、安全重构、设计指导、文档作用。测试类型：单元测试（最小单元）、集成测试（模块间协作）、端到端测试（完整流程）。测试金字塔：单元测试多、集成测试中等、E2E测试少。",
+          "key_points": ["Red-Green-Refactor", "测试类型", "测试金字塔", "TDD优势"]
+        },
+        {
+          "topic": "单元测试最佳实践",
+          "detail": "FIRST原则：Fast（快速）、Independent（独立）、Repeatable（可重复）、Self-validating（自验证）、Timely（及时）。测试结构：Arrange（准备）、Act（执行）、Assert（断言）。Mock与Stub：Mock验证行为、Stub提供数据。测试覆盖率：行覆盖、分支覆盖、条件覆盖。工具：JUnit（Java）、pytest（Python）、Jest（JavaScript）。",
+          "key_points": ["FIRST原则", "AAA结构", "Mock/Stub", "覆盖率"]
+        }
+      ]
+    },
+    "agile": {
+      "title": "敏捷开发",
+      "content": [
+        {
+          "topic": "敏捷宣言与原则",
+          "detail": "敏捷宣言：个体和互动高于流程和工具、工作的软件高于详尽的文档、客户合作高于合同谈判、响应变化高于遵循计划。12条原则：最高优先级是持续交付价值、欢迎需求变更、频繁交付工作软件、业务与开发者每日协作、围绕被激励的个体构建项目、面对面交流、工作软件是进度度量、可持续开发、持续关注技术卓越、简洁、自组织团队、定期反思调整。",
+          "key_points": ["敏捷宣言", "12条原则", "价值观", "敏捷思维"]
+        },
+        {
+          "topic": "Scrum框架",
+          "detail": "Scrum是最流行的敏捷框架。角色：Product Owner（产品负责人）、Scrum Master（流程教练）、Development Team（开发团队）。工件：Product Backlog（产品待办列表）、Sprint Backlog（冲刺待办列表）、Increment（增量）。活动：Sprint（冲刺，通常2周）、Sprint Planning（冲刺计划）、Daily Scrum（每日站会）、Sprint Review（冲刺评审）、Sprint Retrospective（冲刺回顾）。",
+          "key_points": ["Scrum角色", "Scrum工件", "Sprint", "敏捷活动"]
+        },
+        {
+          "topic": "持续集成/持续部署",
+          "detail": "CI/CD自动化软件交付流程。持续集成（CI）：频繁集成代码到主干，自动构建和测试。持续交付（CD）：代码自动部署到测试/预生产环境。持续部署（CD）：代码自动部署到生产环境。流水线阶段：代码提交→静态分析→单元测试→构建→集成测试→部署→验收测试→发布。工具：Jenkins、GitLab CI、GitHub Actions、CircleCI、Travis CI。",
+          "key_points": ["CI概念", "CD概念", "流水线", "CI工具"]
+        }
+      ]
+    },
+    "code_quality": {
+      "title": "代码质量",
+      "content": [
+        {
+          "topic": "代码审查",
+          "detail": "代码审查（Code Review）是提高代码质量的重要手段。审查内容：代码风格、设计模式、潜在Bug、性能问题、安全漏洞、测试覆盖。审查方式：结对编程、正式审查、轻量级审查（Pull Request）。审查清单：代码是否清晰易懂、是否有重复代码、是否遵循SOLID原则、是否有足够测试、是否有安全漏洞、是否有性能问题。工具：Gerrit、Phabricator、GitHub PR、GitLab MR。",
+          "key_points": ["审查内容", "审查方式", "审查清单", "审查工具"]
+        },
+        {
+          "topic": "SOLID原则",
+          "detail": "SOLID是面向对象设计的五大原则。单一职责原则（SRP）：一个类只负责一件事。开闭原则（OCP）：对扩展开放，对修改关闭。里氏替换原则（LSP）：子类可以替换父类。接口隔离原则（ISP）：客户端不应该依赖不使用的接口。依赖倒置原则（DIP）：依赖抽象而非具体实现。",
+          "key_points": ["单一职责", "开闭原则", "里氏替换", "依赖倒置"]
+        }
+      ]
+    }
+  },
+  "evaluation_criteria": {
+    "excellent": "熟练掌握常用设计模式，具备重构能力，实践TDD和敏捷开发，注重代码质量",
+    "good": "了解设计模式，能够进行代码审查，了解敏捷开发流程",
+    "average": "了解基本设计原则，能够编写单元测试",
+    "poor": "缺乏软件工程实践经验"
+  }
+}

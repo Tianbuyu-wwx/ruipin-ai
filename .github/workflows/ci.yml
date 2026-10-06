@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    name: 后端 pytest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 安装依赖
+        run: pip install pytest websockets httpx
+      - name: 全量测试
+        run: python -m pytest -q
+        env:
+          PYTHONPATH: src
+
+  frontend:
+    name: 前端 typecheck + vitest
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v2/web/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: v2/web/app/package-lock.json
+      - name: 安装依赖
+        run: npm ci
+      - name: 类型检查
+        run: npm run typecheck
+      - name: 单元测试
+        run: npm test
+
+  ppg:
+    name: 端侧 rPPG（Node test runner）
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v2/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 测试
+        run: node --experimental-strip-types --test "ppg/*.test.ts"

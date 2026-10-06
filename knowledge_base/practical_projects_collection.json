@@ -1,0 +1,199 @@
+{
+  "category": "实战项目案例集",
+  "description": "包含多个完整实战项目的详细设计、代码实现、架构方案",
+  "projects": [
+    {
+      "name": "分布式电商系统",
+      "type": "企业级项目",
+      "scale": "大型",
+      "tech_stack": {
+        "backend": ["Spring Boot 3.x", "Spring Cloud", "MyBatis-Plus", "RocketMQ", "Redis", "Elasticsearch", "XXL-Job"],
+        "frontend": ["Vue 3", "TypeScript", "Element Plus", "Pinia", "Vue Router"],
+        "database": ["MySQL 8.0", "Redis 7.x", "Elasticsearch 8.x"],
+        "middleware": ["RocketMQ", "Nacos", "Sentinel", "Seata", "XXL-Job"],
+        "devops": ["Docker", "Kubernetes", "Jenkins", "Prometheus", "Grafana"]
+      },
+      "architecture": {
+        "pattern": "微服务架构",
+        "services": [
+          {
+            "name": "网关服务(gateway)",
+            "port": 8080,
+            "description": "统一入口，路由转发，认证鉴权，限流熔断",
+            "tech": ["Spring Cloud Gateway", "Sentinel"]
+          },
+          {
+            "name": "用户服务(user-service)",
+            "port": 9001,
+            "description": "用户注册、登录、信息管理",
+            "tech": ["Spring Boot", "MyBatis-Plus", "JWT"]
+          },
+          {
+            "name": "商品服务(product-service)",
+            "port": 9002,
+            "description": "商品管理、分类、搜索",
+            "tech": ["Spring Boot", "Elasticsearch", "Canal"]
+          },
+          {
+            "name": "订单服务(order-service)",
+            "port": 9003,
+            "description": "订单创建、管理、状态流转",
+            "tech": ["Spring Boot", "RocketMQ", "Seata"]
+          },
+          {
+            "name": "库存服务(inventory-service)",
+            "port": 9004,
+            "description": "库存管理、扣减、预占",
+            "tech": ["Spring Boot", "Redis", "Lua脚本"]
+          },
+          {
+            "name": "支付服务(payment-service)",
+            "port": 9005,
+            "description": "支付接口、回调处理",
+            "tech": ["Spring Boot", "RocketMQ", "幂等设计"]
+          },
+          {
+            "name": "营销服务(marketing-service)",
+            "port": 9006,
+            "description": "优惠券、秒杀、满减",
+            "tech": ["Spring Boot", "Redis", "Lua", "限流"]
+          },
+          {
+            "name": "消息服务(message-service)",
+            "port": 9007,
+            "description": "短信、邮件、站内信",
+            "tech": ["Spring Boot", "RocketMQ"]
+          }
+        ]
+      },
+      "core_features": [
+        {
+          "feature": "分布式事务",
+          "solution": "Seata AT模式 + TCC模式",
+          "implementation": "订单创建时，扣减库存、创建订单、扣减优惠券使用Seata保证一致性",
+          "code_example": "```java\n@GlobalTransactional\npublic OrderCreateResult createOrder(OrderCreateRequest request) {\n    // 1. 校验商品库存\n    inventoryService.checkStock(request.getItems());\n    \n    // 2. 扣减库存\n    inventoryService.decreaseStock(request.getItems());\n    \n    // 3. 创建订单\n    Order order = orderService.createOrder(request);\n    \n    // 4. 使用优惠券\n    if (request.getCouponId() != null) {\n        marketingService.useCoupon(request.getCouponId(), order.getId());\n    }\n    \n    // 5. 发送延迟消息（15分钟后检查支付状态）\n    rocketMQTemplate.asyncSend(\"order-check-topic\", \n        MessageBuilder.withPayload(order.getId()).build(), \n        15, TimeUnit.MINUTES);\n    \n    return new OrderCreateResult(order.getId());\n}\n```"
+        },
+        {
+          "feature": "秒杀系统",
+          "solution": "Redis预减库存 + 异步下单 + 消息队列",
+          "implementation": "使用Redis原子操作预减库存，避免超卖；通过消息队列异步创建订单",
+          "code_example": "```java\n@PostMapping(\"/seckill/{productId}\")\npublic Result seckill(@PathVariable Long productId, @RequestHeader(\"Authorization\") String token) {\n    // 1. 获取用户信息\n    User user = jwtUtil.parseToken(token);\n    \n    // 2. 限流检查\n    if (!rateLimiter.tryAcquire()) {\n        return Result.fail(\"系统繁忙，请稍后再试\");\n    }\n    \n    // 3. 检查是否已购买（幂等）\n    String boughtKey = \"seckill:bought:\" + productId + \":\" + user.getId();\n    if (redisTemplate.hasKey(boughtKey)) {\n        return Result.fail(\"您已参与过该活动\");\n    }\n    \n    // 4. Redis预减库存（Lua脚本保证原子性）\n    String stockKey = \"seckill:stock:\" + productId;\n    Long stock = redisTemplate.execute(SECKILL_SCRIPT, Collections.singletonList(stockKey));\n    \n    if (stock == null || stock < 0) {\n        return Result.fail(\"商品已售罄\");\n    }\n    \n    // 5. 发送MQ异步创建订单\n    SeckillMessage message = new SeckillMessage(user.getId(), productId);\n    rocketMQTemplate.asyncSend(\"seckill-order-topic\", message);\n    \n    return Result.success(\"抢购成功，正在生成订单\");\n}\n\n// Lua脚本\nprivate static final DefaultRedisScript<Long> SECKILL_SCRIPT = new DefaultRedisScript<>();\nstatic {\n    SECKILL_SCRIPT.setScriptText(\n        \"if (redis.call('exists', KEYS[1]) == 1) then\" +\n        \"    local stock = tonumber(redis.call('get', KEYS[1]));\" +\n        \"    if (stock > 0) then\" +\n        \"        redis.call('decr', KEYS[1]);\" +\n        \"        return stock - 1;\" +\n        \"    end;\" +\n        \"    return -1;\" +\n        \"end;\" +\n        \"return -1;\"\n    );\n    SECKILL_SCRIPT.setResultType(Long.class);\n}\n```"
+        },
+        {
+          "feature": "订单超时取消",
+          "solution": "RocketMQ延迟消息 + 定时任务",
+          "implementation": "创建订单时发送延迟消息，超时未支付自动取消订单并回滚库存",
+          "code_example": "```java\n@Component\n@RocketMQMessageListener(topic = \"order-check-topic\", consumerGroup = \"order-check-consumer\")\npublic class OrderCheckListener implements RocketMQListener<Long> {\n    \n    @Autowired\n    private OrderService orderService;\n    \n    @Override\n    public void onMessage(Long orderId) {\n        Order order = orderService.getById(orderId);\n        \n        // 检查订单状态\n        if (order != null && OrderStatus.UNPAID.equals(order.getStatus())) {\n            // 取消订单\n            orderService.cancelOrder(orderId);\n            \n            // 回滚库存\n            inventoryService.rollbackStock(order.getItems());\n            \n            // 回滚优惠券\n            if (order.getCouponId() != null) {\n                marketingService.rollbackCoupon(order.getCouponId());\n            }\n            \n            log.info(\"订单 {} 超时未支付，已自动取消\", orderId);\n        }\n    }\n}\n```"
+        }
+      ]
+    },
+    {
+      "name": "社交APP后端",
+      "type": "互联网项目",
+      "scale": "中型",
+      "tech_stack": {
+        "backend": ["Spring Boot", "Spring WebFlux", "MongoDB", "Redis", "RabbitMQ", "Netty"],
+        "database": ["MongoDB", "Redis", "Elasticsearch"],
+        "realtime": ["WebSocket", "Netty"]
+      },
+      "core_features": [
+        {
+          "feature": "即时通讯",
+          "solution": "Netty + WebSocket实现长连接",
+          "implementation": "使用Netty构建IM服务器，支持单聊、群聊、消息已读回执",
+          "code_example": "```java\n@Component\n@ChannelHandler.Sharable\npublic class IMServerHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {\n    \n    private static final ConcurrentHashMap<String, Channel> userChannelMap = new ConcurrentHashMap<>();\n    \n    @Override\n    protected void channelRead0(ChannelHandlerContext ctx, TextWebSocketFrame frame) {\n        Message msg = JSON.parseObject(frame.text(), Message.class);\n        \n        switch (msg.getMsgType()) {\n            case CONNECT:\n                handleConnect(ctx, msg);\n                break;\n            case CHAT:\n                handleChat(msg);\n                break;\n            case GROUP_CHAT:\n                handleGroupChat(msg);\n                break;\n            case HEARTBEAT:\n                ctx.writeAndFlush(new PongWebSocketFrame());\n                break;\n        }\n    }\n    \n    private void handleChat(Message msg) {\n        // 保存消息到MongoDB\n        messageService.save(msg);\n        \n        // 推送给接收方\n        Channel targetChannel = userChannelMap.get(msg.getToUserId());\n        if (targetChannel != null && targetChannel.isActive()) {\n            targetChannel.writeAndFlush(new TextWebSocketFrame(JSON.toJSONString(msg)));\n        } else {\n            // 用户离线，发送推送通知\n            pushService.sendPush(msg.getToUserId(), \"您有一条新消息\");\n        }\n    }\n}\n```"
+        },
+        {
+          "feature": "Feed流",
+          "solution": "推拉结合模式",
+          "implementation": "大V使用推模式，普通用户使用拉模式，平衡读写压力",
+          "code_example": "```java\n@Service\npublic class FeedService {\n    \n    // 大V阈值\n    private static final int FAN_THRESHOLD = 10000;\n    \n    public void publishPost(Post post) {\n        User author = userService.getById(post.getUserId());\n        \n        if (author.getFanCount() > FAN_THRESHOLD) {\n            // 大V：写入帖子，粉丝拉取\n            postService.save(post);\n        } else {\n            // 普通用户：推送到粉丝收件箱\n            pushToFans(post);\n        }\n    }\n    \n    private void pushToFans(Post post) {\n        List<Long> fanIds = fanService.getFanIds(post.getUserId());\n        \n        // 批量推送到粉丝收件箱（Redis ZSet）\n        for (List<Long> batch : Lists.partition(fanIds, 1000)) {\n            redisTemplate.executePipelined((RedisCallback<Object>) connection -> {\n                for (Long fanId : batch) {\n                    String inboxKey = \"feed:inbox:\" + fanId;\n                    connection.zAdd(inboxKey.getBytes(), post.getCreateTime().getTime(), \n                        post.getId().toString().getBytes());\n                }\n                return null;\n            });\n        }\n    }\n    \n    public List<Post> getFeed(Long userId, Long lastPostId) {\n        // 从收件箱拉取\n        String inboxKey = \"feed:inbox:\" + userId;\n        Set<String> postIds = redisTemplate.opsForZSet()\n            .reverseRangeByScore(inboxKey, 0, lastPostId != null ? lastPostId : Double.MAX_VALUE, 0, 20);\n        \n        if (postIds == null || postIds.isEmpty()) {\n            // 收件箱为空，从关注的大V拉取\n            return pullFromFollowings(userId);\n        }\n        \n        return postService.listByIds(postIds);\n    }\n}\n```"
+        }
+      ]
+    },
+    {
+      "name": "数据中台",
+      "type": "数据平台",
+      "scale": "大型",
+      "tech_stack": {
+        "storage": ["Hadoop", "Hive", "ClickHouse", "Elasticsearch"],
+        "compute": ["Spark", "Flink", "Presto"],
+        "sync": ["DataX", "Canal", "Debezium"],
+        "schedule": ["DolphinScheduler", "Airflow"]
+      },
+      "architecture": {
+        "layers": [
+          {
+            "name": "数据采集层",
+            "components": ["Canal(MySQL Binlog)", "Flume(日志)", "Kafka(消息队列)"],
+            "description": "实时采集业务数据库变更、日志数据"
+          },
+          {
+            "name": "数据存储层",
+            "components": ["HDFS(离线)", "Kafka(实时)", "ClickHouse(OLAP)"],
+            "description": "分层存储原始数据、清洗数据、汇总数据"
+          },
+          {
+            "name": "数据计算层",
+            "components": ["Spark SQL(离线)", "Flink(实时)", "Presto(即席查询)"],
+            "description": "离线批处理、实时流计算"
+          },
+          {
+            "name": "数据服务层",
+            "components": ["Data API", "指标平台", "报表系统"],
+            "description": "对外提供统一数据服务"
+          }
+        ]
+      },
+      "core_features": [
+        {
+          "feature": "实时数仓",
+          "solution": "Flink + Kafka + ClickHouse",
+          "implementation": "使用Flink实时处理Kafka数据，写入ClickHouse提供秒级查询",
+          "code_example": "```java\npublic class RealtimeETLJob {\n    public static void main(String[] args) throws Exception {\n        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();\n        env.setParallelism(4);\n        \n        // 从Kafka读取数据\n        KafkaSource<String> source = KafkaSource.<String>builder()\n            .setBootstrapServers(\"kafka:9092\")\n            .setTopics(\"order-topic\")\n            .setGroupId(\"flink-etl-group\")\n            .setStartingOffsets(OffsetsInitializer.latest())\n            .setValueOnlyDeserializer(new SimpleStringSchema())\n            .build();\n        \n        DataStream<Order> orders = env.fromSource(source, WatermarkStrategy.noWatermarks(), \"Kafka Source\")\n            .map(json -> JSON.parseObject(json, Order.class));\n        \n        // 实时聚合：每5分钟统计各品类销售额\n        DataStream<CategorySales> sales = orders\n            .assignTimestampsAndWatermarks(WatermarkStrategy.<Order>forBoundedOutOfOrderness(Duration.ofSeconds(30))\n                .withTimestampAssigner((order, timestamp) -> order.getCreateTime().getTime()))\n            .keyBy(Order::getCategoryId)\n            .window(TumblingEventTimeWindows.of(Time.minutes(5)))\n            .aggregate(new SalesAggregateFunction());\n        \n        // 写入ClickHouse\n        sales.addSink(new ClickHouseSink<>(\"jdbc:clickhouse://clickhouse:8123/default\", \n            \"INSERT INTO category_sales VALUES (?,?,?,?)\"));\n        \n        env.execute(\"Realtime Sales ETL\");\n    }\n}\n```"
+        }
+      ]
+    }
+  ],
+  "best_practices": {
+    "title": "最佳实践总结",
+    "practices": [
+      {
+        "category": "代码规范",
+        "items": [
+          "遵循阿里巴巴Java开发手册",
+          "使用SonarQube进行代码质量检查",
+          "单元测试覆盖率不低于80%",
+          "核心接口必须添加Swagger文档"
+        ]
+      },
+      {
+        "category": "性能优化",
+        "items": [
+          "数据库查询必须添加索引",
+          "热点数据使用Redis缓存",
+          "接口响应时间控制在200ms以内",
+          "使用连接池管理数据库连接"
+        ]
+      },
+      {
+        "category": "安全防护",
+        "items": [
+          "所有接口必须进行权限校验",
+          "敏感数据加密存储",
+          "防止SQL注入和XSS攻击",
+          "接口添加限流和防重放"
+        ]
+      },
+      {
+        "category": "监控告警",
+        "items": [
+          "核心业务指标接入Prometheus",
+          "错误日志实时告警",
+          "接口成功率低于99%触发告警",
+          "系统资源使用率超过80%告警"
+        ]
+      }
+    ]
+  }
+}

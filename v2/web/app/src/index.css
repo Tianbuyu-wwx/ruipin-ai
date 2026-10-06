@@ -1,0 +1,303 @@
+/* 最小可用样式。无障碍要点：对比度、焦点可见、颜色不作为唯一信息载体
+   （降级横幅既有文字也有 ⚠ 图标 + 边框，不靠颜色单独传达）。 */
+
+:root {
+  --fg: #1e293b;
+  --muted: #64748b;
+  --bg: #f8fafc;
+  --line: #cbd5e1;
+  --primary: #1f5f52;
+  --danger: #b91c1c;
+  font-family: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+h1,
+h2 {
+  line-height: 1.3;
+}
+
+button {
+  font: inherit;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.visually-hidden,
+.visually-hidden:not(:focus):not(:active) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 授权门 */
+.consent-gate fieldset {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.consent-item {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.consent-item label {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  font-weight: 600;
+}
+
+.consent-desc,
+.consent-note,
+.muted {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.consent-note {
+  border-left: 3px solid var(--line);
+  padding-left: 8px;
+}
+
+.consent-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* 面试主界面 */
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.95rem;
+}
+
+.degradation-banner {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 10px 14px;
+  border: 2px solid #d97706;
+  border-left-width: 6px;
+  border-radius: 8px;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.degradation-banner.visible {
+  display: flex;
+}
+
+.room-main {
+  display: grid;
+  gap: 20px;
+}
+
+.question-card,
+.answer-area,
+.transcript,
+.evals,
+.errors {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+  background: #fff;
+}
+
+.question-text {
+  font-size: 1.15rem;
+}
+
+.question-text.muted {
+  font-size: 1rem;
+}
+
+.answer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: center;
+}
+
+textarea {
+  width: 100%;
+  font: inherit;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.avatar-stage {
+  margin: 0;
+  text-align: center;
+}
+
+.avatar-caption {
+  min-height: 1.5em;
+  color: var(--fg);
+  background: rgba(30, 41, 59, 0.06);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 1.05rem;
+}
+
+.partial {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.errors {
+  border-color: var(--danger);
+}
+
+.report-overlay {
+  margin-top: 24px;
+  border-top: 3px double var(--line);
+  padding-top: 16px;
+}
+
+table.dims {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table.dims th,
+table.dims td {
+  border: 1px solid var(--line);
+  padding: 6px 10px;
+  text-align: left;
+}
+
+.report-score {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.report-score .total {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.report-score.unavailable .total {
+  color: var(--danger);
+}
+
+.position-input {
+  display: block;
+  margin-top: 20px;
+}
+
+.position-input input {
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+/* 设置页 */
+.settings fieldset {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin: 16px 0;
+}
+
+.settings-field {
+  display: block;
+  margin: 10px 0;
+}
+
+.settings-field span {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.settings-field input {
+  width: 100%;
+  max-width: 480px;
+  font: inherit;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.settings-check {
+  display: block;
+  margin: 8px 0;
+}
+
+.settings-error {
+  color: var(--danger);
+  margin: 4px 0;
+}
+
+.settings-note,
+.settings-intro {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.settings-saved {
+  color: var(--primary);
+}
+
+.settings-entry {
+  margin-top: 16px;
+}

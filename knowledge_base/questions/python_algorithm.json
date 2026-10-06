@@ -1,0 +1,41 @@
+{
+  "position": "Python算法工程师",
+  "position_code": "python_algorithm",
+  "questions": [
+    {
+      "id": "python-001",
+      "type": "technical",
+      "difficulty": 3,
+      "question": "请解释Python中的生成器和迭代器",
+      "keywords": ["generator", "iterator", "yield", "__iter__", "__next__"]
+    },
+    {
+      "id": "python-002",
+      "type": "technical",
+      "difficulty": 4,
+      "question": "如何实现一个Python装饰器？",
+      "keywords": ["decorator", "@符号", "函数闭包", "参数传递", "返回值"]
+    },
+    {
+      "id": "python-003",
+      "type": "technical",
+      "difficulty": 3,
+      "question": "Python中的GIL是什么？",
+      "keywords": ["Global Interpreter Lock", "并发", "多线程", "性能", "C Python"]
+    },
+    {
+      "id": "python-004",
+      "type": "project",
+      "difficulty": 4,
+      "question": "你在项目中如何优化算法性能？",
+      "keywords": ["时间复杂度", "空间复杂度", "算法选择", "数据结构", "性能分析"]
+    },
+    {
+      "id": "python-005",
+      "type": "behavioral",
+      "difficulty": 2,
+      "question": "你如何解决算法问题？",
+      "keywords": ["问题分析", "算法设计", "代码实现", "测试验证", "优化改进"]
+    }
+  ]
+}

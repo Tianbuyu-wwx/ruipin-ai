@@ -1,0 +1,263 @@
+{
+  "scanned": 14,
+  "results": [
+    {
+      "id": "deadbtn/landing/看示例报告",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：stage, hash, ctas, rpHeadTop"
+    },
+    {
+      "id": "deadbtn/landing/开始面试",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：stage, hash, ctas"
+    },
+    {
+      "id": "deadbtn/prepare/开启摄像头",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：consents, swState, consequence, selfCheck"
+    },
+    {
+      "id": "deadbtn/prepare/生理信号分析",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：consents, swState, consequence"
+    },
+    {
+      "id": "deadbtn/prepare/共享屏幕",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：consents, swState, consequence"
+    },
+    {
+      "id": "deadbtn/prepare/开始面谈",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：stage, railWidth, hash, ctas"
+    },
+    {
+      "id": "deadbtn/prepare/暂不参加",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：stage, hash, ctas"
+    },
+    {
+      "id": "deadbtn/room/收起侧栏",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：railOpen, railWidth"
+    },
+    {
+      "id": "deadbtn/room/打断",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：turn, live, answerDisabled, interruptDisp, yoursDisp, hintIdleDisp"
+    },
+    {
+      "id": "deadbtn/room/重听本题",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：promptReplaying"
+    },
+    {
+      "id": "deadbtn/room/结束面谈",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：stage, railWidth, hash, ctas"
+    },
+    {
+      "id": "deadbtn/room/这轮为规则评分",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：degradeOpen, degradePillExp"
+    },
+    {
+      "id": "deadbtn/closing/查看报告",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：stage, hash, ctas, rpHeadTop"
+    },
+    {
+      "id": "deadbtn/closing/稍后再看",
+      "kind": "死按钮",
+      "ok": true,
+      "why": "点了之后变化：stage, hash, ctas"
+    },
+    {
+      "id": "room/提交按钮：进处理中 + 清空输入 + 转写多一行",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望 进处理中 + 输入框清空 + 转写多一行；实际 turn=processing 输入框=\"\" 转写行 3->4"
+    },
+    {
+      "id": "room/提交后转写里留下的必须是我刚打的那句",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望转写里留下刚提交的内容；实际已完成的转写=「我最近在做的是一套订单对账系统，主要负责把三个来源的流水做自动核对，原来靠人工对，一天要花两个多小时。 || 最难的地方是三个来源的时间戳口径不一致，我先做了一层归一化，再比对。 || 先做了一层口径归一化，再逐字段比对。」"
+    },
+    {
+      "id": "room/空输入时提交按钮应为禁用",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望空输入时提交按钮 disabled，实际 true"
+    },
+    {
+      "id": "room/空输入不可提交（有字才放开）",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望有内容时提交按钮可点，实际 disabled=false"
+    },
+    {
+      "id": "room/Ctrl+Enter 提交（placeholder 承诺过）",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望 Ctrl+Enter 进处理中，实际 turn=processing"
+    },
+    {
+      "id": "room/跳过：换到下一题",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望跳过之后题目变了；实际仍为「你刚才提到口径不一致，如果三个来源的数据…」"
+    },
+    {
+      "id": "room/打断：从面试官说话切到轮到你说",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望打断后 turn=yours，实际 yours"
+    },
+    {
+      "id": "room/重听本题：要能看到重播反馈，且不能换题",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望重播有可见反馈且题目不变；实际 重播标记=true 换题了=false"
+    },
+    {
+      "id": "room/处理中不得出现作答区与打断（无意义的操作不该在场）",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望处理中时作答区与打断按钮都隐藏；实际 作答区=none 打断=none"
+    },
+    {
+      "id": "room/侧栏折叠：宽度真的收掉，且按钮文字跟着换",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望收起后宽度 0，实际 open=false 宽=0"
+    },
+    {
+      "id": "room/降级徽标：点开能看到是哪一环降级",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望面板展开且 aria-expanded 同步，实际 open=true aria=true"
+    },
+    {
+      "id": "room/一致性：降级按钮的 aria-pressed 必须与 data-degrade 一致",
+      "kind": "行为",
+      "ok": true,
+      "why": "data-degrade=1 时 aria-pressed 应为 true，实际 true"
+    },
+    {
+      "id": "room/一致性：演示条状态按钮的文字要反映当前态",
+      "kind": "行为",
+      "ok": true,
+      "why": "演示条状态按钮文字=面试官在说/null，与当前态 speaking 对不上"
+    },
+    {
+      "id": "room/结束面谈：进收尾",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望进收尾，实际 closing"
+    },
+    {
+      "id": "prepare/关掉摄像头：生理项锁住 + 说清为什么 + 用户原来那次同意不许被改写",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望 锁住 + 保留原同意(true) + 开关禁用 + 说明原因；实际 data-on=true locked=true 开关=physiology:true(dis) 提示=true"
+    },
+    {
+      "id": "prepare/摄像头关掉再开回来：生理授权不能被静默丢掉",
+      "kind": "行为",
+      "ok": true,
+      "why": "关掉再开回摄像头后，生理授权原值(true)与开关应恢复；实际 data=true/false aria=true"
+    },
+    {
+      "id": "prepare/关掉摄像头：设备自检里那行不能还说「有画面」",
+      "kind": "行为",
+      "ok": true,
+      "why": "摄像头已关，自检却仍显示「有画面」：麦克风=有信号 摄像头=未开启 扬声器=未检测到输出"
+    },
+    {
+      "id": "report/目录锚点：可以跳，但不得污染路由 hash",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望点目录后仍留在报告页且 hash 仍是 #report（否则刷新会掉回首页）；实际 stage=report hash=#report"
+    },
+    {
+      "id": "report/目录锚点跳转后标题不被吸顶目录挡住",
+      "kind": "行为",
+      "ok": true,
+      "why": ""
+    },
+    {
+      "id": "route/未知 hash 落回首页（而不是白屏）",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望未知 hash 落回 landing，实际 landing"
+    },
+    {
+      "id": "route/手改 hash 应能切屏（回复里承诺过）",
+      "kind": "行为",
+      "ok": true,
+      "why": "改 hash 之后期望切到 report，实际 report"
+    },
+    {
+      "id": "room/计时器只在面试间里走（离开后一格都不该涨）",
+      "kind": "行为",
+      "ok": true,
+      "why": "不在面试间时计时器继续累加了：2.4 秒前 00:07:24，现在 00:07:24"
+    },
+    {
+      "id": "room/侧栏 tab：点谁谁选中，面板跟着换（逐轮评估）",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望选中 evals，实际 tab=evals 面板=evals"
+    },
+    {
+      "id": "room/侧栏 tab：切到日志再切回转写，不能出现两个面板同时显示",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望只剩转写面板，实际 tab=transcript 面板=[transcript]"
+    },
+    {
+      "id": "room/处理完之后要自动进下一题，不能停在处理中",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望处理完自动进下一题；实际 turn=speaking 换题了=true"
+    },
+    {
+      "id": "room/轮到你说：初始不可编辑，打断后可编辑",
+      "kind": "行为",
+      "ok": true,
+      "why": "初始应不可编辑、打断后应可编辑；实际 初始=true 之后=false"
+    },
+    {
+      "id": "landing/同一屏内不应有两个按钮指向同一目的地",
+      "kind": "行为",
+      "ok": true,
+      "why": "首页有 0 个重复目的地：[\"report\",\"prepare\"]"
+    },
+    {
+      "id": "landing/评分怎么算的：点了要真的滚到那一区",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望滚到评分卡片区；实际 scrollY 0 -> 534"
+    },
+    {
+      "id": "demo/深色切换：主题与按钮文字都要跟着换",
+      "kind": "行为",
+      "ok": true,
+      "why": "期望主题与按钮文字同时变；实际 theme=dark 文字=浅色"
+    }
+  ]
+}

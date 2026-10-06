@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>锐聘 AI · 前端示意</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Normal.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Semibold.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/misans@4.1.0/lib/Normal/MiSans-Heavy.min.css">
+
+<style>
+/* ============================================================ 设计 token（唯一真相源） */
+:root{
+  --surface:#FBFAF8;
+  --raise:#FFFFFF;
+  --sunken:#F3F1EC;
+  --recess:#EAE7E0;
+
+  --ink:#1A1917;
+  --muted:#6B6660;
+  --faint:#9A948C;
+
+  --line:#E6E2DA;
+  --line-strong:#D5D0C5;
+
+  --accent:#1F5F52;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#E6EFEB;
+  --accent-line:#B9D2C9;
+
+  --live:#2F7A5F;
+  --live-soft:#E4F0EB;
+  --warn:#8A6524;
+  --warn-soft:#F7F0DE;
+  --fault:#8C3B34;
+  --fault-soft:#F6E7E5;
+
+  --r-ctl:8px;
+  --r-card:14px;
+  --r-ovl:18px;
+
+  /* MiSans 家族内是 305 / 520 / 700 三档，写在 token 里是为了不散落 */
+  --w-body:305;
+  --w-mid:520;
+  --w-max:700;
+
+  --d-fast:120ms;
+  --d-base:220ms;
+  --d-slow:380ms;
+  --ease:cubic-bezier(.16,1,.3,1);
+
+  --font:MiSans,"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;
+
+  --pad:clamp(20px,4vw,64px);
+  /* 演示条独占一条底带，不叠在界面之上。
+     叠着放会压住面试间的控制带，那是真实界面里最要紧的一排控件。 */
+  --demoh:46px;
+}
+
+[data-theme="dark"]{
+  --surface:#121210;
+  --raise:#1C1C19;
+  --sunken:#0D0D0C;
+  --recess:#242320;
+
+  --ink:#EFECE5;
+  --muted:#9C968D;
+  --faint:#6E6961;
+
+  --line:#2C2B27;
+  --line-strong:#3D3B36;
+
+  --accent:#57A88F;
+  --accent-ink:#0C1A16;
+  --accent-soft:#17251F;
+  --accent-line:#2E5147;
+
+  --live:#5FB394;
+  --live-soft:#15231E;
+  --warn:#C9A055;
+  --warn-soft:#241E12;
+  --fault:#C77A73;
+  --fault-soft:#241614;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+
+body{
+  background:var(--surface);
+  color:var(--ink);
+  font-family:var(--font);
+  font-weight:var(--w-body);
+  font-size:15px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:var(--demoh);
+  transition:background var(--d-base) var(--ease),color var(--d-base) var(--ease);
+}
+
+h1,h2,h3,h4,p,figure{margin:0}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+input,textarea{font:inherit;color:inherit}
+
+/* 数字层：等宽只给纯数字 */
+.num{font-family:var(--mono);font-weight:400;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* ============================================================ 通用件 */
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--pad)}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:44px;padding:0 22px;
+  border-radius:var(--r-ctl);
+  font-weight:var(--w-mid);
+  font-size:15px;
+  transition:background var(--d-fast) var(--ease),border-color var(--d-fast) var(--ease),transform var(--d-fast) var(--ease),opacity var(--d-fast) var(--ease);
+}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.42;cursor:not-allowed}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover:not([disabled]){background:color-mix(in srgb,var(--accent) 88%,var(--ink))}
+.btn-quiet{border:1px solid var(--line-strong)}
+.btn-quiet:hover:not([disabled]){background:var(--sunken)}
+.btn-plain{color:var(--muted);padding:0 12px}
+.btn-plain:hover{color:var(--ink)}
+.btn-sm{height:36px;padding:0 16px;font-size:14px}
+
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  height:26px;padding:0 10px;border-radius:999px;
+  font-size:12.5px;font-weight:var(--w-mid);
+  background:var(--sunken);color:var(--muted);
+}
+.tag-accent{background:var(--accent-soft);color:var(--accent)}
+.tag-warn{background:var(--warn-soft);color:var(--warn)}
+.tag-live{background:var(--live-soft);color:var(--live)}
+
+.dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+
+/* ============================================================ 舞台切换 */
+.screen{display:none}
+body[data-stage="landing"] .screen-landing,
+body[data-stage="prepare"] .screen-prepare,
+body[data-stage="room"] .screen-room,
+body[data-stage="closing"] .screen-closing,
+body[data-stage="report"] .screen-report{display:block}
+
+/* 演示控制条：自带一条底部带，不覆盖任何界面内容（不属于设计本身） */
+.demo{
+  position:fixed;left:0;right:0;bottom:0;
+  z-index:9000;
+  height:var(--demoh);
+  display:flex;align-items:center;justify-content:center;gap:2px;
+  padding:0 10px;
+  background:var(--raise);
+  border-top:1px solid var(--line);
+  font-family:var(--mono);font-size:12px;
+  overflow-x:auto;
+}
+.demo button{
+  height:30px;padding:0 12px;border-radius:999px;
+  color:var(--muted);white-space:nowrap;
+  transition:background var(--d-fast) var(--ease),color var(--d-fast) var(--ease);
+}
+.demo button:hover{color:var(--ink);background:var(--sunken)}
+.demo button[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
+.demo .sep{width:1px;height:18px;background:var(--line);margin:0 5px;flex:none}
+
+/* ============================================================ 1 产品首页 */
+.nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:26px 0;
+}
+.wordmark{display:flex;align-items:center;gap:10px;font-weight:var(--w-mid);font-size:16.5px;letter-spacing:.01em}
+.wordmark .mark{
+  width:26px;height:26px;border-radius:9px;background:var(--accent);
+  display:grid;place-items:center;color:var(--accent-ink);
+  font-family:var(--mono);font-size:12px;font-weight:400;
+}
+
+.hero{
+  display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,1fr);
+  gap:clamp(28px,5vw,72px);
+  align-items:center;
+  padding:clamp(28px,6vw,84px) 0 clamp(48px,7vw,96px);
+}
+.hero h1{
+  font-size:clamp(34px,4.6vw,58px);
+  font-weight:var(--w-max);
+  line-height:1.08;
+  letter-spacing:-.035em;
+  max-width:15em;
+}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{
+  margin-top:22px;max-width:33em;
+  font-size:17px;line-height:1.75;color:var(--muted);
+}
+.hero .cta-row{display:flex;align-items:center;gap:14px;margin-top:32px;flex-wrap:wrap}
+.hero .reassure{margin-top:16px;font-size:13.5px;color:var(--faint)}
+
+.preview{
+  border-radius:var(--r-ovl);
+  background:var(--raise);
+  border:1px solid var(--line);
+  overflow:hidden;
+}
+.preview-bar{
+  display:flex;align-items:center;gap:8px;
+  padding:11px 14px;border-bottom:1px solid var(--line);
+  font-family:var(--mono);font-size:11.5px;color:var(--faint);
+}
+.preview-bar i{width:8px;height:8px;border-radius:50%;background:var(--line-strong);display:block}
+.preview-body{padding:22px 22px 24px}
+.preview-q{
+  font-size:20px;font-weight:var(--w-max);line-height:1.4;letter-spacing:-.02em;
+  margin:16px 0 0;
+}
+.preview-wave{display:flex;align-items:flex-end;gap:4px;height:56px;margin-top:18px}
+/* 这里挂的是"面试官正在说话"，在面试间里它会动，首页的同一个画面却一动不动。
+   同一件东西在两处表现不一致，看的人会默认首页那张是死图。 */
+.preview-wave b{flex:1;background:var(--accent-line);border-radius:2px;display:block;animation:pulse 1.15s var(--ease) infinite}
+.preview-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:18px;padding-top:16px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--faint);
+}
+
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;padding-bottom:clamp(26px,3.4vw,50px);scroll-margin-top:28px}
+.cell{
+  border-radius:var(--r-card);
+  background:var(--raise);
+  border:1px solid var(--line);
+  padding:26px 26px 28px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  min-height:200px;
+}
+.cell h3{font-size:19px;font-weight:var(--w-mid);letter-spacing:-.015em;line-height:1.35}
+.cell p{margin-top:12px;font-size:14px;line-height:1.7;color:var(--muted)}
+.cell-a{grid-column:span 4}
+.cell-b{grid-column:span 2}
+.cell-c{grid-column:span 2}
+.cell-d{grid-column:span 4}
+.cell-figure{margin-top:22px}
+
+.lede-block{padding:clamp(26px,3.4vw,52px) 0}
+.lede-block h2{
+  font-size:clamp(26px,3.2vw,40px);font-weight:var(--w-max);
+  line-height:1.16;letter-spacing:-.03em;max-width:20em;
+}
+.lede-block p{margin-top:18px;max-width:36em;color:var(--muted);font-size:16px}
+
+.foot{
+  border-top:1px solid var(--line);
+  padding:30px 0 44px;
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  font-size:13px;color:var(--faint);
+}
+
+/* ============================================================ 2 准备页 */
+.prepare{
+  min-height:calc(100dvh - var(--demoh));
+  display:flex;flex-direction:column;
+  padding-bottom:60px;
+}
+.prepare-head{
+  max-width:760px;
+  padding:clamp(48px,8vw,110px) 0 0;
+}
+.prepare-head h1{
+  font-size:clamp(32px,4vw,50px);
+  font-weight:var(--w-max);
+  line-height:1.1;
+  letter-spacing:-.035em;
+}
+.prepare-head .lede{margin-top:20px;font-size:16.5px;color:var(--muted);max-width:32em;line-height:1.8}
+
+.facts{display:flex;gap:44px;margin-top:38px;flex-wrap:wrap}
+.fact .k{font-size:12.5px;color:var(--faint);letter-spacing:.02em}
+.fact .v{margin-top:4px;font-size:22px;font-weight:var(--w-mid);letter-spacing:-.02em}
+.fact .v .num{font-size:24px}
+
+.prepare-body{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);margin-top:clamp(40px,6vw,72px);align-items:start}
+
+.consent-list{display:flex;flex-direction:column;gap:12px}
+.consent{
+  border:1px solid var(--line);
+  border-radius:var(--r-card);
+  padding:20px 22px;
+  background:var(--raise);
+  display:flex;gap:18px;align-items:flex-start;
+  transition:border-color var(--d-base) var(--ease),background var(--d-base) var(--ease);
+}
+.consent[data-on="true"]{border-color:var(--accent-line);background:var(--accent-soft)}
+.consent[data-locked="true"]{opacity:.62}
+.consent .txt{flex:1;min-width:0}
+.consent .t{font-weight:var(--w-mid);font-size:15.5px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.consent .d{margin-top:7px;font-size:13.5px;line-height:1.7;color:var(--muted)}
+.consent .why{margin-top:9px;font-size:13px;line-height:1.7;color:var(--accent)}
+
+.switch{
+  flex:none;width:46px;height:27px;border-radius:999px;
+  background:var(--recess);position:relative;
+  transition:background var(--d-base) var(--ease);
+  margin-top:2px;
+}
+.switch i{
+  position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;
+  background:var(--raise);
+  transition:transform var(--d-base) var(--ease);
+  display:block;
+}
+.switch[aria-checked="true"]{background:var(--accent)}
+.switch[aria-checked="true"] i{transform:translateX(19px)}
+.switch[disabled]{cursor:not-allowed}
+
+.prepare-side{display:flex;flex-direction:column;gap:16px}
+.card{
+  border:1px solid var(--line);border-radius:var(--r-card);
+  background:var(--raise);padding:22px;
+}
+.card > h3{font-size:15.5px;font-weight:var(--w-mid)}
+.check-row{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:12px 0;font-size:14px;
+}
+.check-row + .check-row{border-top:1px solid var(--line)}
+.check-row .lbl{display:flex;align-items:center;gap:9px;color:var(--muted)}
+.field{margin-top:6px}
+.field label{display:block;font-size:13.5px;color:var(--muted);margin-bottom:7px}
+.field input{
+  width:100%;height:44px;padding:0 14px;
+  border:1px solid var(--line-strong);border-radius:var(--r-ctl);
+  background:var(--surface);
+  transition:border-color var(--d-fast) var(--ease),background var(--d-fast) var(--ease);
+}
+.field input:focus{border-color:var(--accent);outline:none;background:var(--raise)}
+.field .hint{margin-top:7px;font-size:12.5px;color:var(--faint)}
+
+.prepare-actions{
+  margin-top:34px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  position:sticky;bottom:0;
+  background:var(--surface);
+  padding:16px 0 22px;
+}
+/* 吸底条必须完全不透，否则下面的正文会从渐变里透出来，读起来像重影 */
+.prepare-actions::before{
+  content:"";position:absolute;left:0;right:0;top:-30px;height:30px;
+  background:linear-gradient(to top,var(--surface),transparent);
+  pointer-events:none;
+}
+
+/* ============================================================ 3 面试间 */
+.screen-room{height:calc(100dvh - var(--demoh));overflow:hidden}
+.room{
+  height:calc(100dvh - var(--demoh));display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  position:relative;
+}
+
+.room-top{
+  display:flex;align-items:center;gap:20px;
+  padding:16px clamp(18px,3vw,36px);
+  border-bottom:1px solid var(--line);
+}
+.room-top .brand{display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:var(--w-mid)}
+.room-top .brand .mark{width:22px;height:22px;border-radius:8px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--mono);font-size:10.5px}
+.room-top .spacer{flex:1}
+.progress{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted)}
+.progress .bars{display:flex;gap:4px}
+.progress .bars b{width:20px;height:3px;border-radius:2px;background:var(--line-strong);display:block}
+.progress .bars b[data-done]{background:var(--accent)}
+.progress .bars b[data-now]{background:var(--accent);height:5px;margin-top:-1px}
+.timer{font-size:14px;color:var(--muted)}
+
+.room-main{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;
+  min-height:0;
+}
+
+.stage{
+  position:relative;display:flex;flex-direction:column;
+  padding:clamp(20px,3vw,40px) clamp(18px,3vw,36px) 24px;
+  min-height:0;
+}
+
+.signal{
+  flex:1;min-height:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;
+  border-radius:var(--r-ovl);
+  background:var(--sunken);
+  border:1px solid var(--line);
+  padding:28px;
+}
+.signal .state{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:13.5px;font-weight:var(--w-mid);color:var(--accent);
+  letter-spacing:.01em;
+}
+.wave{display:flex;align-items:center;gap:5px;height:110px;width:min(560px,100%)}
+.wave b{flex:1;background:var(--accent-line);border-radius:3px;display:block;height:6px}
+.room[data-turn="speaking"] .wave b{animation:pulse 1.15s var(--ease) infinite}
+.room[data-turn="yours"] .wave b{background:var(--line-strong);height:5px;animation:none}
+.room[data-turn="processing"] .wave b{background:var(--line);height:4px;animation:none}
+
+@keyframes pulse{
+  0%,100%{transform:scaleY(1)}
+  50%{transform:scaleY(var(--peak,4))}
+}
+@media (prefers-reduced-motion:reduce){
+  .room .wave b,.preview-wave b{animation:none !important}
+  *{transition-duration:1ms !important}
+}
+
+.prompt{
+  margin-top:18px;
+  border-radius:var(--r-card);
+  background:var(--raise);
+  border:1px solid var(--line);
+  padding:26px clamp(22px,2.6vw,34px) 28px;
+}
+.prompt .who{font-size:12.5px;color:var(--faint);margin-bottom:10px;letter-spacing:.02em}
+.prompt p{
+  font-size:clamp(21px,2.6vw,31px);
+  font-weight:var(--w-max);
+  line-height:1.38;
+  letter-spacing:-.028em;
+  max-width:30em;
+}
+.prompt .buf{
+  margin-top:14px;font-size:13.5px;color:var(--warn);
+  display:flex;align-items:center;gap:8px;
+}
+/* 「重听本题」得让人看出"刚才重播了一遍"。只把边框提亮一档，不说这是动画。 */
+.prompt.is-replaying{animation:replay 1.2s var(--ease)}
+@keyframes replay{
+  0%,100%{border-color:var(--line)}
+  38%{border-color:var(--accent-line)}
+}
+
+.rail{
+  width:340px;flex:none;
+  border-left:1px solid var(--line);
+  display:flex;flex-direction:column;min-height:0;
+  transition:width var(--d-slow) var(--ease);
+}
+.rail[data-open="false"]{width:0;border-left:0;overflow:hidden}
+.rail-tabs{display:flex;gap:2px;padding:12px 12px 0;flex:none}
+.rail-tabs button{
+  height:32px;padding:0 13px;border-radius:var(--r-ctl);
+  font-size:13.5px;color:var(--muted);
+  transition:background var(--d-fast) var(--ease),color var(--d-fast) var(--ease);
+}
+.rail-tabs button[aria-selected="true"]{background:var(--sunken);color:var(--ink);font-weight:var(--w-mid)}
+.rail-body{flex:1;min-height:0;overflow-y:auto;padding:16px 18px 24px}
+
+.rail-panel{display:none}
+.rail-panel[data-on]{display:block}
+.rail-panel h4{font-size:12.5px;color:var(--faint);letter-spacing:.04em;margin-bottom:12px}
+
+.line{
+  padding:11px 0;font-size:14px;line-height:1.65;
+}
+.line + .line{border-top:1px solid var(--line)}
+.line .q{color:var(--faint);font-size:13px;display:block;margin-bottom:5px}
+.line .a{color:var(--ink)}
+.line .live{color:var(--faint)}
+.caret{display:inline-block;width:2px;height:15px;background:var(--accent);vertical-align:-2px;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.caret{animation:none}}
+
+.score-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.score-row .n{font-family:var(--mono);font-size:15px;font-weight:400}
+.score-row .n.idle{color:var(--faint);font-family:var(--font);font-size:13.5px}
+
+.room-bar{
+  border-top:1px solid var(--line);
+  padding:14px clamp(18px,3vw,36px);
+  display:flex;align-items:center;gap:16px;
+  background:var(--surface);
+}
+.turn{
+  display:flex;align-items:center;gap:9px;flex:none;
+  font-size:14px;font-weight:var(--w-mid);color:var(--accent);
+  min-width:118px;
+}
+.room[data-turn="yours"] .turn{color:var(--accent)}
+.room[data-turn="speaking"] .turn,
+.room[data-turn="processing"] .turn{color:var(--muted)}
+
+.compose{flex:1;min-width:0;display:flex;align-items:center;gap:12px}
+.compose textarea{
+  flex:1;min-width:0;resize:none;height:48px;padding:13px 16px;
+  border:1px solid var(--line-strong);border-radius:var(--r-ctl);
+  background:var(--raise);line-height:1.5;
+  transition:border-color var(--d-fast) var(--ease);
+}
+.compose textarea:focus{border-color:var(--accent);outline:none}
+.compose textarea[disabled]{background:var(--sunken);color:var(--faint)}
+
+.bar-actions{display:flex;align-items:center;gap:10px;flex:none}
+.room[data-turn="speaking"] .only-yours,
+.room[data-turn="processing"] .only-yours{display:none}
+/* 状态决定控制带里出现什么：系统在处理时不该有「打断」，那是无意义的操作 */
+.room[data-turn="yours"] .only-speak,
+.room[data-turn="processing"] .only-speak{display:none}
+
+.hint-idle{
+  flex:1;font-size:13.5px;color:var(--faint);
+  display:none;
+}
+.room[data-turn="speaking"] .hint-idle,
+.room[data-turn="processing"] .hint-idle{display:block}
+.room[data-turn="speaking"] .compose,
+.room[data-turn="processing"] .compose{display:none}
+
+/* 降级徽标：常驻静默，点击展开 */
+.degrade{
+  position:absolute;right:clamp(18px,3vw,36px);bottom:96px;
+  z-index:40;
+}
+.degrade-pill{
+  display:inline-flex;align-items:center;gap:9px;
+  height:34px;padding:0 14px;border-radius:999px;
+  background:var(--warn-soft);color:var(--warn);
+  font-size:13px;font-weight:var(--w-mid);
+  border:1px solid transparent;
+  transition:border-color var(--d-fast) var(--ease);
+}
+.degrade-pill:hover{border-color:currentColor}
+.degrade-panel{
+  position:absolute;right:0;bottom:44px;width:340px;
+  border-radius:var(--r-ovl);
+  background:var(--raise);
+  border:1px solid var(--line-strong);
+  padding:18px 20px;
+  display:none;
+}
+.degrade[data-open="true"] .degrade-panel{display:block}
+.degrade-panel h4{font-size:14px;font-weight:var(--w-mid);margin-bottom:12px}
+.degrade-panel .row{font-size:13.5px;color:var(--muted);line-height:1.7;padding:9px 0}
+.degrade-panel .row + .row{border-top:1px solid var(--line)}
+.degrade-panel .row b{color:var(--ink);font-weight:var(--w-mid);display:block;margin-bottom:2px}
+.room[data-degrade="0"] .degrade{display:none}
+
+/* ============================================================ 4 收尾 */
+.closing{
+  min-height:calc(100dvh - var(--demoh));display:grid;place-items:center;
+  padding:120px var(--pad);
+}
+.closing-inner{max-width:560px;text-align:center}
+.closing h1{
+  font-size:clamp(28px,3.4vw,42px);font-weight:var(--w-max);
+  line-height:1.16;letter-spacing:-.032em;
+}
+.closing p{margin-top:20px;font-size:16px;color:var(--muted);line-height:1.8}
+.closing .acts{margin-top:34px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.closing .meta{margin-top:30px;font-size:13px;color:var(--faint)}
+
+/* ============================================================ 5 报告 */
+.report{display:grid;grid-template-columns:216px minmax(0,1fr);gap:clamp(28px,4vw,64px);padding-bottom:120px}
+.toc{position:sticky;top:0;align-self:start;padding:44px 0}
+.toc .t{font-size:12.5px;color:var(--faint);letter-spacing:.04em;margin-bottom:14px}
+.toc a{
+  display:block;padding:7px 0;font-size:14px;color:var(--muted);text-decoration:none;
+  transition:color var(--d-fast) var(--ease);
+}
+.toc a:hover{color:var(--ink)}
+.toc a[aria-current="true"]{color:var(--accent);font-weight:var(--w-mid)}
+.toc .meta{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--faint);line-height:1.9}
+
+.report-body{max-width:760px;padding-top:44px}
+.rep-head h1{
+  font-size:clamp(26px,3vw,38px);font-weight:var(--w-max);
+  letter-spacing:-.032em;line-height:1.16;
+}
+.rep-head .sub{margin-top:14px;color:var(--muted);font-size:15.5px;line-height:1.8;max-width:34em}
+
+.verdict{
+  margin-top:34px;padding:30px 0 34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:end;
+}
+.verdict .grade{font-size:clamp(30px,3.6vw,44px);font-weight:var(--w-max);letter-spacing:-.035em;line-height:1.1}
+.verdict .grade span{color:var(--accent)}
+.verdict .expl{margin-top:12px;font-size:14.5px;color:var(--muted);line-height:1.75;max-width:30em}
+.verdict .total{text-align:right;flex:none}
+.verdict .total .n{font-family:var(--mono);font-size:46px;font-weight:400;letter-spacing:-.03em;display:block;line-height:1}
+.verdict .total .cap{margin-top:8px;font-size:12.5px;color:var(--faint)}
+
+section.block{padding:44px 0 6px;scroll-margin-top:20px}
+section.block h2{font-size:20px;font-weight:var(--w-mid);letter-spacing:-.02em;margin-bottom:8px}
+section.block .intro{font-size:14.5px;color:var(--muted);line-height:1.8;max-width:36em;margin-bottom:22px}
+
+.dim{display:grid;grid-template-columns:104px minmax(0,1fr) 64px;gap:16px;align-items:center;padding:13px 0}
+.dim + .dim{border-top:1px solid var(--line)}
+.dim .nm{font-size:14px}
+.dim .bar{height:6px;border-radius:3px;background:var(--sunken);overflow:hidden}
+.dim .bar i{display:block;height:100%;background:var(--accent);border-radius:3px;transform-origin:left;transition:transform var(--d-slow) var(--ease)}
+.dim .sc{font-family:var(--mono);font-size:14px;text-align:right;color:var(--muted)}
+.dim[data-muted="true"] .nm{color:var(--faint)}
+.dim[data-muted="true"] .bar i{background:var(--line-strong)}
+.dim[data-muted="true"] .sc{color:var(--faint)}
+
+.note{
+  border-radius:var(--r-card);
+  border:1px solid var(--line);
+  background:var(--raise);
+  padding:20px 22px;
+  font-size:14px;line-height:1.8;color:var(--muted);
+}
+.note + .note{margin-top:12px}
+.note h3{font-size:15px;font-weight:var(--w-mid);color:var(--ink);margin-bottom:9px}
+.note b{color:var(--ink);font-weight:var(--w-mid)}
+.note .fig{font-family:var(--mono);font-size:14px}
+.note-warn{border-color:var(--accent-line);background:var(--accent-soft)}
+.note-warn h3{color:var(--accent)}
+.note-warn{color:color-mix(in srgb,var(--accent) 62%,var(--ink))}
+
+.rep-foot{
+  margin-top:40px;padding-top:22px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--faint);line-height:1.9;
+}
+
+@media (max-width:1080px){
+  .hero{grid-template-columns:1fr;gap:40px}
+  .prepare-body{grid-template-columns:1fr}
+  .rail{width:300px}
+  .report{grid-template-columns:1fr}
+  .toc{position:static;padding:34px 0 0;border-bottom:1px solid var(--line);padding-bottom:18px}
+  .report-body{padding-top:24px}
+}
+@media (max-width:860px){
+  .bento{grid-template-columns:1fr}
+  .cell-a,.cell-b,.cell-c,.cell-d{grid-column:span 1}
+  .rail{display:none}
+  .verdict{grid-template-columns:1fr}
+  .verdict .total{text-align:left}
+}
+</style>
+</head>
+
+<body data-stage="landing">
+
+<!-- ============================================================ 1 产品首页 -->
+<div class="screen screen-landing">
+  <div class="wrap">
+    <nav class="nav">
+      <div class="wordmark"><span class="mark">RP</span>锐聘 AI</div>
+      <button class="btn btn-plain" data-go="report">看示例报告</button>
+    </nav>
+
+    <header class="hero">
+      <div>
+        <h1>把面试练一遍，<br>看看哪里讲不清楚。</h1>
+        <p class="lede">
+          一共五道题。答得笼统，下一题就接着问刚才那句里的细节。答完出一份报告，
+          分数怎么算、哪几项不该信，都写在里面。
+        </p>
+        <div class="cta-row">
+          <button class="btn btn-primary" data-go="prepare">开始面试</button>
+          <button class="btn btn-plain" data-scroll="#bento">评分怎么算的</button>
+        </div>
+        <p class="reassure">不用注册。摄像头和生理信号可以分开拒绝，拒绝不会让分数变低。</p>
+      </div>
+
+      <figure class="preview">
+        <div class="preview-bar">
+          <i></i><i></i><i></i>
+          <span style="margin-left:6px">面试间 · 第 2 题 / 共 5 题</span>
+        </div>
+        <div class="preview-body">
+          <span class="tag tag-live"><span class="dot"></span>面试官在说</span>
+          <p class="preview-q">请讲一个你主导过、但结果不如预期的项目。你当时是怎么判断问题出在哪里的？</p>
+          <div class="preview-wave" id="heroWave"></div>
+          <div class="preview-foot">
+            <span>追问取决于你刚才说了什么</span>
+            <span class="num">00:07:24</span>
+          </div>
+        </div>
+      </figure>
+    </header>
+
+    <div class="bento" id="bento">
+      <div class="cell cell-a">
+        <div>
+          <h3>心率测不准就不算这一项</h3>
+          <p>画面里的脉搏信号信噪比不够的时候，这一轮不计入生理维度，剩下几项按比例重新分权重。</p>
+        </div>
+        <div class="cell-figure">
+          <div class="dim" style="grid-template-columns:92px minmax(0,1fr) 56px;padding:7px 0">
+            <span class="nm">技术能力</span><span class="bar"><i style="width:84%"></i></span><span class="sc">84.0</span>
+          </div>
+          <div class="dim" data-muted="true" style="grid-template-columns:92px minmax(0,1fr) 56px;padding:7px 0">
+            <span class="nm">生理维度</span><span class="bar"><i style="width:0%"></i></span><span class="sc">未评</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cell cell-b">
+        <div>
+          <h3>哪一环没跑起来，角落会挂个标</h3>
+          <p>语音识别、形象渲染、评分，有一个没跑起来，角落就多一个徽标。</p>
+        </div>
+        <div><span class="tag tag-warn">这轮分数是规则算法算的</span></div>
+      </div>
+
+      <div class="cell cell-c">
+        <div>
+          <h3>追问看你刚说了什么</h3>
+          <p>连着两轮答不上来，中间插一道不计分的缓冲题。</p>
+        </div>
+        <div><span class="tag">缓冲题不计分</span></div>
+      </div>
+
+      <div class="cell cell-d">
+        <div>
+          <h3>报告里会写清楚哪些分数不能信</h3>
+          <p>六个维度的分数之外，还有两行：某一维去掉之后总分变成多少，这次有几轮没进评分。</p>
+        </div>
+        <div><span class="tag tag-accent">去掉一项，总分 71.2</span></div>
+      </div>
+    </div>
+
+    <section class="lede-block">
+      <h2>现在这份报告里的分数，还不能当真。</h2>
+      <p>开发版用的是规则评分和合成语音。分数只用来验证整条链路通不通，拿去判断一个人够不够格是不行的。</p>
+    </section>
+
+    <footer class="foot">
+      <span>锐聘 AI · 模拟面试系统</span>
+      <span>生理数据单独授权，原始视频不留存</span>
+    </footer>
+  </div>
+</div>
+
+<!-- ============================================================ 2 准备页 -->
+<div class="screen screen-prepare">
+  <div class="wrap prepare">
+    <header class="prepare-head">
+      <h1>确认授权和设备，然后开始。</h1>
+      <p class="lede">四项授权各自独立。除了参加面试，其余都能关。关了只是让对应维度不参与算分，不会让总分变低。</p>
+
+      <div class="facts">
+        <div class="fact"><div class="k">题量</div><div class="v"><span class="num">5</span> 题</div></div>
+        <div class="fact"><div class="k">预计时长</div><div class="v"><span class="num">20</span> 到 <span class="num">30</span> 分钟</div></div>
+        <div class="fact"><div class="k">随时可中止</div><div class="v">答过的会留着</div></div>
+      </div>
+    </header>
+
+    <div class="prepare-body">
+      <div>
+        <div class="consent-list" id="consentList">
+          <div class="consent" data-key="base" data-on="true" data-locked="true">
+            <div class="txt">
+              <div class="t">参加本次模拟面试 <span class="tag tag-accent">必需</span></div>
+              <p class="d">没法跳过。面试流程和最后那份报告都建立在这一项上。</p>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" disabled aria-label="参加本次模拟面试"><i></i></button>
+          </div>
+
+          <div class="consent" data-key="camera" data-on="true">
+            <div class="txt">
+              <div class="t">开启摄像头</div>
+              <p class="d">用来取画面，并从画面里读脉搏信号。原始视频不留存，只留下统计量。</p>
+              <p class="why" data-role="consequence">已开启。生理维度参与评分，权重最多占 8%。</p>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="开启摄像头"><i></i></button>
+          </div>
+
+          <div class="consent" data-key="physiology" data-on="true">
+            <div class="txt">
+              <div class="t">生理信号分析 <span class="tag">敏感信息 · 单独授权</span></div>
+              <p class="d">从画面里读心率和紧张之后的恢复速度。这属于敏感个人信息，得单独同意一次，勾选摄像头不能代替这一项。</p>
+              <p class="why" data-role="consequence">已授权。会计算紧张之后恢复得多快。</p>
+            </div>
+            <button class="switch" role="switch" aria-checked="true" aria-label="生理信号分析"><i></i></button>
+          </div>
+
+          <div class="consent" data-key="screen" data-on="false">
+            <div class="txt">
+              <div class="t">共享屏幕</div>
+              <p class="d">只有演示类题目会用到。不开也能把整场面试走完。</p>
+              <p class="why" data-role="consequence">已关闭。演示类题目改成口述。</p>
+            </div>
+            <button class="switch" role="switch" aria-checked="false" aria-label="共享屏幕"><i></i></button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="prepare-side">
+        <div class="card">
+          <h3>设备自检</h3>
+          <div style="margin-top:10px">
+            <div class="check-row">
+              <span class="lbl"><span class="dot" style="color:var(--live)"></span>麦克风</span>
+              <span class="tag tag-live">有信号</span>
+            </div>
+            <div class="check-row" data-check-row="camera">
+              <span class="lbl"><span class="dot" style="color:var(--live)"></span>摄像头</span>
+              <span class="tag tag-live" data-check="camera">有画面</span>
+            </div>
+            <div class="check-row">
+              <span class="lbl"><span class="dot" style="color:var(--warn)"></span>扬声器</span>
+              <span class="tag tag-warn">未检测到输出</span>
+            </div>
+          </div>
+          <p class="hint" style="margin-top:12px;font-size:12.5px;color:var(--faint)">
+            扬声器没声音的话，题目会完整显示成文字，作答和评分都不受影响。
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="field" style="margin-top:0">
+            <label for="position">应聘岗位</label>
+            <input id="position" placeholder="例如：后端工程师" value="">
+            <p class="hint">填了会按岗位出题，不填就用通用题。</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="prepare-actions">
+      <button class="btn btn-primary" data-go="room">开始面谈</button>
+      <button class="btn btn-plain" data-go="landing">暂不参加</button>
+      <span style="font-size:13px;color:var(--faint)">点了开始才会启用麦克风</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 3 面试间 -->
+<div class="screen screen-room">
+  <div class="room" id="roomRoot" data-turn="speaking" data-degrade="1">
+    <header class="room-top">
+      <div class="brand"><span class="mark">RP</span>锐聘 AI</div>
+      <div class="spacer"></div>
+      <div class="progress">
+        <span>第 <span class="num">2</span> 题 / 共 <span class="num">5</span> 题</span>
+        <span class="bars"><b data-done></b><b data-now></b><b></b><b></b><b></b></span>
+      </div>
+      <div class="timer num" id="timer">00:07:24</div>
+      <button class="btn btn-plain btn-sm" id="railToggle" aria-expanded="true">收起侧栏</button>
+    </header>
+
+    <div class="room-main">
+      <section class="stage">
+        <div class="signal">
+          <span class="state" id="stateLabel"><span class="dot"></span>面试官在说</span>
+          <div class="wave" id="wave" aria-hidden="true"></div>
+        </div>
+
+        <div class="prompt">
+          <div class="who" id="promptWho">面试官 · 第 2 题</div>
+          <p id="promptText">请讲一个你主导过、但结果不如预期的项目。你当时是怎么判断问题出在哪里的？</p>
+          <div class="buf" id="bufferNote" style="display:none">
+            <span class="dot"></span>这是一道缓冲题，不记分
+          </div>
+        </div>
+      </section>
+
+      <aside class="rail" id="rail" data-open="true">
+        <div class="rail-tabs" role="tablist">
+          <button role="tab" id="tab-transcript" aria-controls="panel-transcript" aria-selected="true" data-tab="transcript">转写</button>
+          <button role="tab" id="tab-evals" aria-controls="panel-evals" aria-selected="false" data-tab="evals">逐轮评估</button>
+          <button role="tab" id="tab-log" aria-controls="panel-log" aria-selected="false" data-tab="log">日志</button>
+        </div>
+        <div class="rail-body">
+          <div class="rail-panel" role="tabpanel" aria-labelledby="tab-transcript" id="panel-transcript" data-panel="transcript" data-on>
+            <h4>语音转写</h4>
+            <div class="line">
+              <span class="q">第 1 题 · 请介绍一下你最近主导的一个项目</span>
+              <span class="a">我最近在做的是一套订单对账系统，主要负责把三个来源的流水做自动核对，原来靠人工对，一天要花两个多小时。</span>
+            </div>
+            <div class="line">
+              <span class="q">面试官追问</span>
+              <span class="a">最难的地方是三个来源的时间戳口径不一致，我先做了一层归一化，再比对。</span>
+            </div>
+            <div class="line">
+              <span class="q">第 2 题</span>
+              <span class="live" id="liveText"></span><span class="caret" id="liveCaret" style="display:none"></span>
+            </div>
+          </div>
+
+          <div class="rail-panel" role="tabpanel" aria-labelledby="tab-evals" id="panel-evals" data-panel="evals">
+            <h4>逐轮评估</h4>
+            <div class="line">
+              <span class="q">第 1 题 · 请介绍一下你最近主导的一个项目</span>
+              <div class="score-row">
+                <span class="n">82.5</span>
+                <span style="font-size:12.5px;color:var(--faint)">置信度 0.81</span>
+              </div>
+            </div>
+            <div class="line">
+              <span class="q">第 2 题</span>
+              <span class="score-row"><span class="n idle">这轮还没答完</span></span>
+            </div>
+            <div class="line">
+              <span class="q">第 3 题</span>
+              <span class="score-row"><span class="n idle">还没问到</span></span>
+            </div>
+          </div>
+
+          <div class="rail-panel" role="tabpanel" aria-labelledby="tab-log" id="panel-log" data-panel="log">
+            <h4>会话日志</h4>
+            <div class="line" style="font-family:var(--mono);font-size:12px;color:var(--faint)">
+              <div>seq 41 · state.changed · asking</div>
+              <div>seq 42 · question.start · t2</div>
+              <div>seq 43 · degradation.changed · L2</div>
+              <div>seq 44 · metric.hr · bpm 无有效信号</div>
+              <div>seq 45 · media.ack · credits 16</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="room-bar">
+      <div class="turn" id="turnLabel" aria-live="polite"><span class="dot"></span>面试官在说</div>
+
+      <div class="compose">
+        <label for="answer" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">作答输入</label>
+        <textarea id="answer" placeholder="在这里打字，或者直接开口说。Ctrl/⌘ 加 Enter 提交"></textarea>
+        <div class="bar-actions only-yours">
+          <button class="btn btn-primary btn-sm" id="submitBtn" disabled>提交</button>
+          <button class="btn btn-quiet btn-sm" id="skipBtn">跳过</button>
+        </div>
+      </div>
+
+      <p class="hint-idle" id="hintIdle">面试官在说话，随时可以打断</p>
+
+      <div class="bar-actions only-speak">
+        <button class="btn btn-quiet btn-sm" id="interruptBtn">打断</button>
+        <button class="btn btn-quiet btn-sm" id="replayBtn">重听本题</button>
+      </div>
+
+      <div class="bar-actions">
+        <button class="btn btn-plain btn-sm" data-go="closing">结束面谈</button>
+      </div>
+    </footer>
+
+    <div class="degrade" id="degrade" data-open="false">
+      <button class="degrade-pill" id="degradePill" aria-expanded="false">
+        <span class="dot"></span>这轮为规则评分
+      </button>
+      <div class="degrade-panel">
+        <h4>这一轮哪里不一样</h4>
+        <div class="row"><b>评分换成了规则算法</b>模型评估服务没有响应。这一轮改用规则算法出分，分数只作参考。</div>
+        <div class="row"><b>其余都正常</b>出题、追问、语音转写、报告汇总都在照常运行。</div>
+        <div class="row"><b>不用你做什么</b>接着答完就行。报告里会标出哪几轮是规则算法算的。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 4 收尾 -->
+<div class="screen screen-closing">
+  <div class="wrap closing">
+    <div class="closing-inner">
+      <h1>回答都保存好了。</h1>
+      <p>报告正在生成，大概一分钟。可以先关掉页面，之后用这次会话的链接回来看。</p>
+      <div class="acts">
+        <button class="btn btn-primary" data-go="report">查看报告</button>
+        <button class="btn btn-quiet" data-go="landing">稍后再看</button>
+      </div>
+      <p class="meta">一共 <span class="num">5</span> 轮，其中 <span class="num">1</span> 轮是缓冲题，不记分</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 5 报告 -->
+<div class="screen screen-report">
+  <div class="wrap report">
+    <nav class="toc">
+      <div class="t">目录</div>
+      <a href="#rep-head" aria-current="true">总览</a>
+      <a href="#rep-dims">六个维度</a>
+      <a href="#rep-physio">生理维度</a>
+      <a href="#rep-counter">去掉某一维</a>
+      <a href="#rep-limit">哪几轮没算进去</a>
+      <div class="meta">
+        评分版本 rubric v2.3<br>
+        计分 4 轮 / 缓冲 1 轮<br>
+        评分来源 rubric
+      </div>
+    </nav>
+
+    <div class="report-body">
+      <header class="rep-head" id="rep-head">
+        <h1>这份报告能信几分</h1>
+        <p class="sub">结论来自 4 轮计分回答。其中 2 轮是模型评的，另外 2 轮因为评估服务没响应，换成规则算法算的。</p>
+      </header>
+
+      <div class="verdict">
+        <div>
+          <div class="grade">可以当参考 <span>不适合排名</span></div>
+          <p class="expl">回答的数量和完整度都够。但有 2 轮是规则算法算的，分数只表示大致方向，小数点后面那一位没有意义。</p>
+        </div>
+        <div class="total">
+          <span class="n">76.4</span>
+          <div class="cap">四轮计分总分</div>
+        </div>
+      </div>
+
+      <section class="block" id="rep-dims">
+        <h2>六个维度</h2>
+        <p class="intro">条越长分越高。灰色的两项这轮没算，不加分也不扣分。</p>
+
+        <div class="dim"><span class="nm">技术能力</span><span class="bar"><i style="width:84%"></i></span><span class="sc">84.0</span></div>
+        <div class="dim"><span class="nm">问题解决</span><span class="bar"><i style="width:79%"></i></span><span class="sc">79.0</span></div>
+        <div class="dim"><span class="nm">沟通表达</span><span class="bar"><i style="width:76%"></i></span><span class="sc">76.0</span></div>
+        <div class="dim"><span class="nm">完整度</span><span class="bar"><i style="width:71%"></i></span><span class="sc">71.0</span></div>
+        <div class="dim" data-muted="true"><span class="nm">团队协作</span><span class="bar"><i style="width:0%"></i></span><span class="sc">未评</span></div>
+        <div class="dim" data-muted="true"><span class="nm">领导力</span><span class="bar"><i style="width:0%"></i></span><span class="sc">未评</span></div>
+      </section>
+
+      <section class="block" id="rep-physio">
+        <h2>生理维度</h2>
+        <div class="note note-warn">
+          <h3>这一轮没测到可用的生理信号</h3>
+          画面里的脉搏信号信噪比不够，三个算法算出来的心率互相打架。<b>对不上的数据我们不用</b>，
+          所以这一维整轮不参与计算，剩下几项按比例重新分权重。总分还是能比，没测到不等于被扣分。
+        </div>
+      </section>
+
+      <section class="block" id="rep-counter">
+        <h2>去掉某一维，总分变成多少</h2>
+        <p class="intro">把某一维整个去掉再算一遍，看总分差多少。差得越多，说明这一维对这次结果影响越大。</p>
+        <div class="note">
+          <h3>去掉技术能力，总分变成 <span class="fig">71.2</span></h3>
+          少了 <span class="fig">5.2</span> 分，是六项里影响最大的一项。
+        </div>
+        <div class="note">
+          <h3>去掉完整度，总分变成 <span class="fig">77.1</span></h3>
+          反而多了 <span class="fig">0.7</span> 分。这一项拖了后腿，可以先从这里改。
+        </div>
+      </section>
+
+      <section class="block" id="rep-limit">
+        <h2>哪几轮没算进去</h2>
+        <div class="note">
+          <h3>5 轮里有 1 轮不进评分</h3>
+          那一轮是连续追问之后插进来的缓冲题。这类题按设计<b>不计分</b>，答得随便点也没关系。
+        </div>
+        <div class="note">
+          <h3>分数是谁算的</h3>
+          4 轮计分里，2 轮是模型评的，2 轮因为评估服务没响应，换成了规则算法。规则算法的置信度上限是 0.6。
+        </div>
+      </section>
+
+      <div class="rep-foot">
+        评分版本 rubric v2.3；权重重分配 2 次；降级事件 L2 共 2 条；生理维度因信噪比不足整轮退出<br>
+        开发版使用规则评分和合成语音，分数只用来自检链路，不能拿来评判一个人。
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ 演示控制条 -->
+<div class="demo" role="group" aria-label="示意页切换">
+  <button data-go="landing" aria-pressed="true">首页</button>
+  <button data-go="prepare">准备</button>
+  <button data-go="room">面试间</button>
+  <button data-go="closing">收尾</button>
+  <button data-go="report">报告</button>
+  <span class="sep"></span>
+  <button id="turnBtn" hidden>面试官在说</button>
+  <button id="degBtn" aria-pressed="true" hidden>降级徽标</button>
+  <span class="sep"></span>
+  <button id="themeBtn">深色</button>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var body = document.body;
+  var demo = document.querySelector(".demo");
+  var STAGES = ["landing", "prepare", "room", "closing", "report"];
+
+  var $ = function(s){ return document.querySelector(s); };
+  var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); };
+
+  /* ============================================================ 元素 */
+  var room = $("#roomRoot");
+  var turnLabel = $("#turnLabel");
+  var stateLabel = $("#stateLabel");
+  var promptEl = $(".prompt");
+  var promptWho = $("#promptWho");
+  var promptText = $("#promptText");
+  var bufferNote = $("#bufferNote");
+  var answer = $("#answer");
+  var submitBtn = $("#submitBtn");
+  var skipBtn = $("#skipBtn");
+  var interruptBtn = $("#interruptBtn");
+  var replayBtn = $("#replayBtn");
+  var hintIdle = $("#hintIdle");
+  var timerEl = $("#timer");
+  var turnBtn = $("#turnBtn");
+  var degBtn = $("#degBtn");
+  var themeBtn = $("#themeBtn");
+  var rail = $("#rail");
+  var railToggle = $("#railToggle");
+  var degrade = $("#degrade");
+  var degradePill = $("#degradePill");
+
+  /* ============================================================ 路由 */
+  /* 路由只管"在哪一屏"。它不解释锚点 —— 报告页的目录锚点会抢走 hash，
+     那样一刷新就掉回首页。所以目录改为自己滚动，不碰 hash。 */
+  var demoButtons = demo.querySelectorAll("[data-go]");
+
+  function go(stage){
+    body.dataset.stage = stage;
+    demoButtons.forEach(function(b){
+      b.setAttribute("aria-current", String(b.dataset.go === stage));
+    });
+    turnBtn.hidden = stage !== "room";
+    degBtn.hidden = stage !== "room";
+    if (location.hash.slice(1) !== stage) history.replaceState(null, "", "#" + stage);
+    window.scrollTo(0, 0);
+    if (stage === "report") growBars();
+  }
+
+  document.addEventListener("click", function(e){
+    var jump = e.target.closest ? e.target.closest("[data-go]") : null;
+    if (jump){ go(jump.dataset.go); return; }
+    var to = e.target.closest ? e.target.closest("[data-scroll]") : null;
+    if (to){
+      var t = document.querySelector(to.dataset.scroll);
+      if (t) t.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+  });
+
+  /* 手改地址栏里的 #xxx 也该切屏 —— 演示条上的说明承诺过这一点 */
+  window.addEventListener("hashchange", function(){
+    var want = location.hash.replace("#", "");
+    if (STAGES.indexOf(want) >= 0 && body.dataset.stage !== want) go(want);
+  });
+
+  /* ============================================================ 主题 */
+  themeBtn.addEventListener("click", function(){
+    var dark = document.documentElement.dataset.theme === "dark";
+    document.documentElement.dataset.theme = dark ? "light" : "dark";
+    themeBtn.textContent = dark ? "深色" : "浅色";
+  });
+
+  /* ============================================================ 波形 */
+  function buildWave(el, count, peakMax){
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i++){
+      var b = document.createElement("b");
+      var t = i / (count - 1);
+      /* 中间高、两端低，像一段说话的包络，而不是随机噪声 */
+      var env = Math.sin(Math.PI * t);
+      var peak = 1.4 + env * (peakMax - 1.4) * (0.72 + 0.28 * Math.sin(i * 1.7));
+      b.style.setProperty("--peak", peak.toFixed(2));
+      b.style.height = (5 + env * 14).toFixed(1) + "px";
+      b.style.animationDelay = (i * 38 % 900) + "ms";
+      frag.appendChild(b);
+    }
+    el.innerHTML = "";
+    el.appendChild(frag);
+  }
+  buildWave($("#wave"), 42, 9);
+  buildWave($("#heroWave"), 32, 6);
+
+  /* ============================================================ 面试间：题序与三态 */
+  /* 题目是序列，不是一段循环动画。原先把三态做成"点一下换下一个"的演示道具，
+     结果「跳过」没有下一题可去，「打断」也无从谈起 —— 交互是演出来的，不是真的。 */
+  var QUESTIONS = [
+    { who:"面试官 · 第 2 题", text:"请讲一个你主导过、但结果不如预期的项目。你当时是怎么判断问题出在哪里的？", buffer:false },
+    { who:"面试官 · 第 3 题", text:"你刚才提到口径不一致，如果三个来源的数据量差两个数量级，你的方案还成立吗？", buffer:false },
+    { who:"面试官 · 缓冲题", text:"先不着急。说一件最近让你觉得挺有意思的小事就行。", buffer:true },
+    { who:"面试官 · 第 4 题", text:"回到你那套对账系统。让你重新设计一次，哪一步你会换掉？", buffer:false }
+  ];
+
+  var PHASE = {
+    speaking:   { label:"面试官在说", hint:"面试官在说话，随时可以打断" },
+    yours:      { label:"轮到你说",   hint:"" },
+    processing: { label:"系统在处理", hint:"在看你刚才的回答，然后决定要不要追问" }
+  };
+
+  var q = 0;
+  var phase = "speaking";
+  var pending = null;
+
+  function setPhase(p){
+    phase = p;
+    room.dataset.turn = p;
+    var meta = PHASE[p];
+    turnLabel.innerHTML = '<span class="dot"></span>' + meta.label;
+    stateLabel.innerHTML = '<span class="dot"></span>' + meta.label;
+    hintIdle.textContent = meta.hint;
+    turnBtn.textContent = meta.label;
+
+    var editable = p === "yours";
+    answer.disabled = !editable;
+    answer.placeholder = editable
+      ? "在这里打字，或者直接开口说。Ctrl/⌘ 加 Enter 提交"
+      : "现在不能作答";
+    syncSubmit();
+    if (editable) answer.focus({ preventScroll:true });
+  }
+
+  function setQuestion(i){
+    q = i;
+    var item = QUESTIONS[q];
+    promptWho.textContent = item.who;
+    promptText.textContent = item.text;
+    bufferNote.style.display = item.buffer ? "flex" : "none";
+  }
+
+  /* 空着不让点。禁用态比点完再弹一句"请先输入"少一次往返。 */
+  function syncSubmit(){
+    submitBtn.disabled = !(phase === "yours" && answer.value.trim().length > 0);
+  }
+
+  function beginProcessing(ms, done){
+    setPhase("processing");
+    if (pending) clearTimeout(pending);
+    pending = setTimeout(function(){ pending = null; done(); }, ms);
+  }
+
+  function nextQuestion(){
+    setQuestion((q + 1) % QUESTIONS.length);
+    resetLive();
+    setPhase("speaking");
+  }
+
+  function submitAnswer(){
+    if (phase !== "yours") return;
+    var text = answer.value.trim();
+    if (!text) return;
+    commitTranscript(text);
+    answer.value = "";
+    syncSubmit();
+    beginProcessing(1700, nextQuestion);
+  }
+
+  function skipQuestion(){
+    if (phase !== "yours") return;
+    answer.value = "";
+    syncSubmit();
+    beginProcessing(700, nextQuestion);
+  }
+
+  function interrupt(){
+    if (phase !== "speaking") return;
+    if (pending){ clearTimeout(pending); pending = null; }
+    setPhase("yours");
+  }
+
+  function replayQuestion(){
+    if (phase !== "speaking") return;
+    promptEl.classList.remove("is-replaying");
+    void promptEl.offsetWidth;   /* 连点第二次也得重放一遍，不然动画不会重启 */
+    promptEl.classList.add("is-replaying");
+    setTimeout(function(){ promptEl.classList.remove("is-replaying"); }, 1200);
+  }
+
+  submitBtn.addEventListener("click", submitAnswer);
+  skipBtn.addEventListener("click", skipQuestion);
+  interruptBtn.addEventListener("click", interrupt);
+  replayBtn.addEventListener("click", replayQuestion);
+
+  answer.addEventListener("input", syncSubmit);
+  answer.addEventListener("keydown", function(e){
+    /* placeholder 里写了「Ctrl/⌘ 加 Enter 提交」，那就得真的能提交 */
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)){
+      e.preventDefault();
+      submitAnswer();
+    }
+  });
+
+  /* ============================================================ 转写 */
+  var transcriptPanel = $('.rail-panel[data-panel="transcript"]');
+  var liveText = $("#liveText");
+  var liveCaret = $("#liveCaret");
+  var SAMPLE = "我判断问题出在，我们一直在优化对账的准确率，但业务真正卡住的地方其实是延迟。";
+  var charIdx = 0;
+
+  function resetLive(){
+    charIdx = 0;
+    if (liveText) liveText.textContent = "";
+    if (liveCaret) liveCaret.style.display = "none";
+  }
+
+  /* 答完的这一段要变成"已完成的转写"，并开一行给下一题。
+     否则提交之后这行字会一直挂在那里，谁也不知道交没交上去。 */
+  function commitTranscript(text){
+    var lastLine = transcriptPanel.lastElementChild;
+    if (lastLine){
+      var oldCaret = lastLine.querySelector(".caret");
+      if (oldCaret) oldCaret.parentNode.removeChild(oldCaret);
+      var oldLive = lastLine.querySelector(".live");
+      if (oldLive){
+        oldLive.className = "a";
+        oldLive.removeAttribute("id");
+        oldLive.textContent = text;
+      }
+    }
+    var next = QUESTIONS[(q + 1) % QUESTIONS.length];
+    var row = document.createElement("div");
+    row.className = "line";
+    row.innerHTML = '<span class="q"></span><span class="live" id="liveText"></span><span class="caret" id="liveCaret" style="display:none"></span>';
+    row.firstElementChild.textContent = next.who.replace("面试官 · ", "");
+    transcriptPanel.appendChild(row);
+    liveText = $("#liveText");
+    liveCaret = $("#liveCaret");
+    charIdx = 0;
+  }
+
+  setInterval(function(){
+    if (body.dataset.stage !== "room" || phase !== "yours") return;
+    if (charIdx >= SAMPLE.length) return;   /* 播完停住，不从头发一遍 */
+    charIdx++;
+    if (liveText) liveText.textContent = SAMPLE.slice(0, charIdx);
+    if (liveCaret) liveCaret.style.display = "inline-block";
+  }, 130);
+
+  /* ============================================================ 计时 */
+  var secs = 444;
+  function fmt(s){
+    var h = String(Math.floor(s / 3600)).padStart(2, "0");
+    var m = String(Math.floor(s % 3600 / 60)).padStart(2, "0");
+    var x = String(s % 60).padStart(2, "0");
+    return h + ":" + m + ":" + x;
+  }
+  timerEl.textContent = fmt(secs);
+  setInterval(function(){
+    /* 人不在面试间，计时器就该停住。原来它在首页也照涨，用户切回来会看到
+       一个和自己无关的时长。 */
+    if (body.dataset.stage !== "room") return;
+    secs++;
+    timerEl.textContent = fmt(secs);
+  }, 1000);
+
+  /* ============================================================ 降级徽标 */
+  degradePill.addEventListener("click", function(){
+    var open = degrade.dataset.open === "true";
+    degrade.dataset.open = String(!open);
+    degradePill.setAttribute("aria-expanded", String(!open));
+  });
+
+  function syncDegrade(){
+    degBtn.setAttribute("aria-pressed", String(room.dataset.degrade === "1"));
+  }
+  degBtn.addEventListener("click", function(){
+    room.dataset.degrade = room.dataset.degrade === "1" ? "0" : "1";
+    syncDegrade();
+  });
+  syncDegrade();
+
+  /* ============================================================ 侧栏 */
+  railToggle.addEventListener("click", function(){
+    var open = rail.dataset.open === "true";
+    rail.dataset.open = String(!open);
+    railToggle.textContent = open ? "展开侧栏" : "收起侧栏";
+    railToggle.setAttribute("aria-expanded", String(!open));
+  });
+
+  $$(".rail-tabs button").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      $$(".rail-tabs button").forEach(function(b){
+        b.setAttribute("aria-selected", String(b === btn));
+      });
+      $$(".rail-panel").forEach(function(p){
+        if (p.dataset.panel === btn.dataset.tab) p.setAttribute("data-on", "");
+        else p.removeAttribute("data-on");
+      });
+    });
+  });
+
+  /* ============================================================ 授权 */
+  var consequence = {
+    camera:["已开启。生理维度参与评分，权重最多占 8%。","已关闭。生理维度不参与，剩下几项按比例重新分权重。"],
+    physiology:["已授权。会计算紧张之后恢复得多快。","已关闭。不采集生理信号，这一维整轮不计算。"],
+    screen:["已开启。演示类题目可以直接共享屏幕。","已关闭。演示类题目改成口述。"]
+  };
+
+  /* 摄像头关掉 ≠ 用户撤销了生理授权。那是一次单独的同意，不该被另一张卡的开关代它决定，
+     所以只把这一项锁住并说明原因；摄像头开回来，原来那次同意接着生效。 */
+  function syncCameraGate(){
+    var cam = $('.consent[data-key="camera"]');
+    var phy = $('.consent[data-key="physiology"]');
+    if (!cam || !phy) return;
+    var camOn = cam.dataset.on === "true";
+    phy.dataset.locked = String(!camOn);
+    var sw = phy.querySelector(".switch");
+    sw.disabled = !camOn;
+    var txt = phy.querySelector('[data-role="consequence"]');
+    if (!camOn){
+      txt.textContent = "摄像头关着，读不到脉搏信号。这项的授权记着，打开摄像头就接着算。";
+    } else {
+      txt.textContent = consequence.physiology[phy.dataset.on === "true" ? 0 : 1];
+    }
+  }
+
+  /* 设备自检说的是"现在这一秒设备怎么样"。上面刚把摄像头关了，
+     这一行还写着「有画面」，那就等于界面在自相矛盾。 */
+  function syncChecks(){
+    var cam = $('.consent[data-key="camera"]');
+    var tag = $('[data-check="camera"]');
+    if (!cam || !tag) return;
+    var camOn = cam.dataset.on === "true";
+    tag.textContent = camOn ? "有画面" : "未开启";
+    tag.className = "tag " + (camOn ? "tag-live" : "tag-warn");
+    var dot = $('[data-check-row="camera"] .dot');
+    if (dot) dot.style.color = camOn ? "var(--live)" : "var(--warn)";
+  }
+
+  $$(".consent .switch").forEach(function(sw){
+    if (sw.disabled) return;
+    sw.addEventListener("click", function(){
+      var box = sw.closest(".consent");
+      var on = box.dataset.on === "true";
+      box.dataset.on = String(!on);
+      sw.setAttribute("aria-checked", String(!on));
+      var txt = box.querySelector('[data-role="consequence"]');
+      var pair = consequence[box.dataset.key];
+      if (pair) txt.textContent = on ? pair[1] : pair[0];
+      syncCameraGate();
+      syncChecks();
+    });
+  });
+  syncChecks();
+
+  /* ============================================================ 报告 */
+  function growBars(){
+    var bars = $$(".dim .bar i");
+    bars.forEach(function(i){ i.style.transform = "scaleX(0)"; });
+    /* 双 rAF：先让 scaleX(0) 落到一帧上，否则浏览器会把 0 和 1 合并到同一帧计算，
+       条子会从满格"缩回去"再长出来。 */
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        bars.forEach(function(i, n){
+          setTimeout(function(){ i.style.transform = "scaleX(1)"; }, n * 70);
+        });
+      });
+    });
+  }
+
+  var tocLinks = $$(".toc a");
+  tocLinks.forEach(function(a){
+    a.addEventListener("click", function(e){
+      e.preventDefault();
+      var target = document.querySelector(a.getAttribute("href"));
+      if (target) target.scrollIntoView({ behavior:"smooth", block:"start" });
+      tocLinks.forEach(function(x){ x.removeAttribute("aria-current"); });
+      a.setAttribute("aria-current", "true");
+    });
+  });
+
+  /* ============================================================ 入场 */
+  var params = new URLSearchParams(location.search);
+  if (params.get("theme") === "dark"){
+    document.documentElement.dataset.theme = "dark";
+    themeBtn.textContent = "浅色";
+  }
+
+  setQuestion(0);
+  setPhase("speaking");
+  var want = (location.hash || "").replace("#", "");
+  go(STAGES.indexOf(want) >= 0 ? want : "landing");
+
+  /* ============================================================ 自检模式（?audit=1） */
+  /* 三类事故：①越界 ②文字互相压字 ③可见却零尺寸。只报结论也报口径。 */
+  if (params.get("audit") === "1"){
+    setTimeout(function(){
+      var de = document.documentElement;
+      var stage = body.dataset.stage;
+      var all = Array.prototype.slice.call(document.querySelectorAll("*"));
+      var inDemo = function(el){ return el.closest && el.closest(".demo"); };
+      /* 已渲染 = 自身样式可见 且 祖先链上没有人把它藏起来。
+         只查自身样式会漏掉这条：隐藏屏幕里的子元素自身 display 仍是 block，
+         但 getClientRects() 为空，rect 全是 0，于是被判成「零尺寸」一大片假阳性。
+         第一次跑就是这么被骗的：报 135 个零尺寸，全是没显示的屏幕。 */
+      var rendered = function(el){
+        if (inDemo(el) || el.closest("[hidden]")) return false;
+        var cs = getComputedStyle(el);
+        if (cs.display === "none" || cs.visibility === "hidden" || cs.opacity === "0") return false;
+        return el.getClientRects().length > 0;
+      };
+      var rect = function(el){ return el.getBoundingClientRect(); };
+
+      var checked = all.filter(rendered);
+      var laid = checked;
+
+      var overflowX = de.scrollWidth - de.clientWidth;
+      var overflowY = de.scrollHeight - de.clientHeight;
+
+      var beyond = laid.filter(function(el){
+        var r = rect(el);
+        var cs = getComputedStyle(el);
+        /* 刻意出血或固定定位的元素不算越界 */
+        if (cs.position === "fixed") return false;
+        return r.right > de.clientWidth + 1.5 || r.left < -1.5;
+      }).map(function(el){
+        var r = rect(el);
+        return { sel: el.tagName.toLowerCase() + "." + (el.className || "").toString().split(" ")[0],
+                 left: Math.round(r.left), right: Math.round(r.right) };
+      });
+
+      var textEls = laid.filter(function(el){
+        return Array.prototype.some.call(el.childNodes, function(n){
+          return n.nodeType === 3 && n.textContent.trim().length > 0;
+        });
+      });
+
+      /* 遮挡 ≠ 压字。
+         吸底条（position: sticky）本来就会盖住正文，只要它自己不透明且正文能滚出来，就是正常行为。
+         把两者混成一条，会得出「准备页有 3 处压字」这种吓人但不成立的结论。 */
+      var inOverlay = function(el){
+        for (var n = el; n && n !== document.body; n = n.parentElement){
+          var pos = getComputedStyle(n).position;
+          if (pos === "fixed" || pos === "sticky") return true;
+        }
+        return false;
+      };
+
+      var hits = [];
+      var occlusions = [];
+      for (var i = 0; i < textEls.length; i++){
+        for (var j = i + 1; j < textEls.length; j++){
+          var a = textEls[i], b = textEls[j];
+          if (a.contains(b) || b.contains(a)) continue;
+          var ra = rect(a), rb = rect(b);
+          var ix = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+          var iy = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+          if (ix <= 0 || iy <= 0) continue;
+          var inter = ix * iy;
+          var smaller = Math.min(ra.width * ra.height, rb.width * rb.height);
+          if (!(smaller > 0 && inter > smaller * 0.2)) continue;
+          var entry = {
+            a: a.tagName.toLowerCase() + "." + (a.className || "").toString().split(" ")[0],
+            b: b.tagName.toLowerCase() + "." + (b.className || "").toString().split(" ")[0],
+            ratio: +(inter / smaller).toFixed(2)
+          };
+          if (inOverlay(a) || inOverlay(b)) occlusions.push(entry);
+          else hits.push(entry);
+        }
+      }
+
+      var zero = laid.filter(function(el){
+        var hasText = Array.prototype.some.call(el.childNodes, function(n){
+          return n.nodeType === 3 && n.textContent.trim().length > 0;
+        });
+        if (!hasText) return false;
+        var r = rect(el);
+        return r.width < 1 || r.height < 1;
+      }).map(function(el){ return el.tagName.toLowerCase() + "." + (el.className || "").toString().split(" ")[0]; });
+
+      var result = {
+        stage: stage,
+        theme: document.documentElement.dataset.theme,
+        viewport: de.clientWidth + "x" + de.clientHeight,
+        checkedElements: checked.length,
+        textElements: textEls.length,
+        overflowX: overflowX,
+        overflowY: overflowY,
+        beyond: beyond,
+        collisions: hits,
+        occlusions: occlusions,
+        zeroSize: zero
+      };
+
+      var pre = document.createElement("pre");
+      pre.id = "__audit__";
+      pre.style.display = "none";
+      pre.textContent = "__AUDIT__" + JSON.stringify(result);
+      document.body.appendChild(pre);
+    }, 600);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{
+  "category": "网络安全知识库",
+  "description": "包含Web安全、加密技术、身份认证、安全开发等详细技术知识",
+  "knowledge_base": {
+    "web_security": {
+      "title": "Web安全",
+      "content": [
+        {
+          "topic": "OWASP Top 10",
+          "detail": "OWASP Top 10是最关键的Web应用安全风险。A01:2021-失效的访问控制（越权访问、目录遍历）。A02:2021-加密机制失效（明文传输、弱加密算法）。A03:2021-注入（SQL注入、命令注入、LDAP注入）。A04:2021-不安全设计（缺乏安全设计原则）。A05:2021-安全配置错误（默认配置、错误处理泄露信息）。A06:2021-易受攻击和过时组件（已知漏洞组件）。A07:2021-身份识别和认证失效（弱密码、会话管理）。A08:2021-软件和数据完整性故障（反序列化、依赖项）。A09:2021-安全日志和监控失效（缺乏审计日志）。A10:2021-服务端请求伪造（SSRF）。",
+          "key_points": ["访问控制", "注入攻击", "安全配置", "SSRF"]
+        },
+        {
+          "topic": "SQL注入防护",
+          "detail": "SQL注入是通过输入恶意SQL代码攻击数据库。攻击方式：联合查询注入、报错注入、盲注（布尔盲注、时间盲注）。防护措施：参数化查询（PreparedStatement，最佳实践）、输入验证（白名单）、ORM框架（自动转义）、最小权限原则（数据库账号权限）、WAF防护（Web应用防火墙）。代码示例：使用?占位符而非字符串拼接。",
+          "key_points": ["注入类型", "参数化查询", "输入验证", "最小权限"]
+        },
+        {
+          "topic": "XSS防护",
+          "detail": "XSS（跨站脚本攻击）是向网页注入恶意脚本。类型：存储型XSS（恶意脚本存储在服务器）、反射型XSS（恶意脚本在URL中）、DOM型XSS（通过DOM操作触发）。防护措施：输入过滤（白名单）、输出编码（HTML实体编码）、CSP（内容安全策略，限制资源加载）、HttpOnly Cookie（禁止JS访问Cookie）、X-XSS-Protection头。",
+          "key_points": ["XSS类型", "输入过滤", "输出编码", "CSP策略"]
+        },
+        {
+          "topic": "CSRF防护",
+          "detail": "CSRF（跨站请求伪造）是诱导用户在已认证状态下执行非预期操作。攻击原理：用户登录A网站→访问恶意B网站→B网站发起对A的请求→浏览器自动携带A的Cookie→A认为是合法请求。防护措施：CSRF Token（表单中嵌入随机Token）、SameSite Cookie（限制第三方Cookie）、验证Referer头、双重Cookie验证。",
+          "key_points": ["CSRF原理", "CSRF Token", "SameSite", "Referer验证"]
+        }
+      ]
+    },
+    "authentication": {
+      "title": "身份认证",
+      "content": [
+        {
+          "topic": "认证机制",
+          "detail": "常用认证方式：Session-Cookie（服务端存储Session，客户端存储Cookie，适合传统Web）、JWT（JSON Web Token，无状态，适合API和微服务）、OAuth 2.0（第三方授权，适合社交登录）、SSO（单点登录，适合多系统）。Session vs JWT：Session有状态、安全性高、扩展性差；JWT无状态、扩展性好、Token难撤销。",
+          "key_points": ["Session-Cookie", "JWT", "OAuth 2.0", "SSO"]
+        },
+        {
+          "topic": "JWT详解",
+          "detail": "JWT由Header（算法和类型）、Payload（声明信息）、Signature（签名）三部分组成，用.分隔。优点：无状态、跨域、易于传输。缺点：Token较大、无法主动失效、Payload可解码（不存放敏感信息）。安全实践：使用HTTPS、设置合理过期时间、刷新Token机制、签名密钥保密。",
+          "key_points": ["JWT结构", "优缺点", "安全实践", "刷新机制"]
+        },
+        {
+          "topic": "密码安全",
+          "detail": "密码存储：禁止明文存储，使用哈希算法（BCrypt、SCrypt、Argon2，带盐）。密码传输：使用HTTPS，禁止GET方式传输密码。密码策略：最小长度8位、复杂度要求（大小写+数字+特殊字符）、定期更换、历史密码限制。密码找回：验证码机制、链接有效期、安全问题。",
+          "key_points": ["密码哈希", "BCrypt", "密码策略", "密码找回"]
+        }
+      ]
+    },
+    "encryption": {
+      "title": "加密技术",
+      "content": [
+        {
+          "topic": "对称加密",
+          "detail": "对称加密使用相同密钥加密和解密，速度快，适合大数据量加密。算法：AES（Advanced Encryption Standard，目前最常用，支持128/192/256位密钥）、DES（已淘汰，密钥太短）、3DES（DES改进，仍不推荐）、ChaCha20（流加密，性能优秀）。模式：ECB（电子密码本，不安全）、CBC（密码块链接，需IV）、GCM（认证加密，推荐）。",
+          "key_points": ["AES算法", "加密模式", "密钥管理", "GCM认证"]
+        },
+        {
+          "topic": "非对称加密",
+          "detail": "非对称加密使用公钥加密、私钥解密，速度慢，适合密钥交换和数字签名。算法：RSA（最常用，密钥长度2048位以上）、ECC（椭圆曲线加密，相同安全强度下密钥更短）、DSA（数字签名算法）。应用场景：HTTPS握手（交换对称密钥）、数字签名（验证身份和数据完整性）。",
+          "key_points": ["RSA", "ECC", "密钥交换", "数字签名"]
+        },
+        {
+          "topic": "哈希与HMAC",
+          "detail": "哈希函数将任意数据映射为固定长度摘要，不可逆。算法：MD5（已淘汰，可碰撞）、SHA-1（已淘汰）、SHA-256（推荐）、SHA-3（新一代标准）。HMAC（Hash-based Message Authentication Code）：哈希+密钥，用于消息认证，防止篡改。应用场景：密码存储、数据完整性校验、数字签名。",
+          "key_points": ["SHA-256", "HMAC", "密码存储", "完整性校验"]
+        }
+      ]
+    },
+    "secure_coding": {
+      "title": "安全开发",
+      "content": [
+        {
+          "topic": "安全编码规范",
+          "detail": "输入验证：所有输入都不可信，白名单验证（只允许已知安全输入）、长度限制、类型检查。输出编码：根据上下文编码（HTML、JavaScript、URL、SQL）。错误处理：不暴露敏感信息（堆栈、SQL语句），统一错误页面。日志记录：记录安全事件（登录、权限变更），不包含敏感信息（密码、Token）。依赖管理：及时更新组件，扫描已知漏洞（OWASP Dependency-Check、Snyk）。",
+          "key_points": ["输入验证", "输出编码", "错误处理", "依赖管理"]
+        },
+        {
+          "topic": "安全测试",
+          "detail": "安全测试方法：SAST（静态应用安全测试，代码扫描）、DAST（动态应用安全测试，运行时扫描）、IAST（交互式应用安全测试，插桩监控）、渗透测试（人工模拟攻击）。工具：SonarQube（代码质量+安全）、Burp Suite（Web渗透）、OWASP ZAP（开源Web扫描）。安全开发生命周期（SDL）：需求→设计→编码→测试→上线→运营，每个阶段融入安全活动。",
+          "key_points": ["SAST/DAST", "渗透测试", "安全工具", "SDL"]
+        }
+      ]
+    }
+  },
+  "evaluation_criteria": {
+    "excellent": "深入理解OWASP安全风险、认证机制、加密技术，具备安全开发和安全测试经验",
+    "good": "了解常见Web攻击和防护，能够使用JWT等认证机制，了解基本加密算法",
+    "average": "了解基本安全概念，能够避免常见安全漏洞",
+    "poor": "安全意识薄弱"
+  }
+}

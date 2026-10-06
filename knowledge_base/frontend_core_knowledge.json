@@ -1,0 +1,107 @@
+{
+  "category": "前端核心技术知识库",
+  "description": "包含HTML/CSS/JavaScript、前端框架、工程化、性能优化等详细技术知识",
+  "knowledge_base": {
+    "javascript": {
+      "title": "JavaScript核心",
+      "content": [
+        {
+          "topic": "原型链与继承",
+          "detail": "JavaScript使用原型链实现继承。每个对象都有__proto__属性指向原型对象，构造函数有prototype属性。原型链查找：对象→原型→原型的原型→Object.prototype→null。继承方式：原型链继承、构造函数继承、组合继承、寄生组合继承、ES6 class extends。class语法糖底层仍是原型链。",
+          "key_points": ["__proto__与prototype", "原型链查找", "继承方式", "class语法糖"]
+        },
+        {
+          "topic": "闭包与作用域",
+          "detail": "闭包是函数和其周围状态的引用组合。作用域链决定变量查找顺序：当前作用域→外层作用域→全局作用域。闭包应用：数据私有化、函数柯里化、防抖节流、模块化。变量提升：var声明提升，let/const暂时性死区。块级作用域：let/const在块内有效。",
+          "key_points": ["闭包原理", "作用域链", "应用场景", "变量提升"]
+        },
+        {
+          "topic": "异步编程",
+          "detail": "JavaScript异步编程演进：回调函数→Promise→async/await。Promise三种状态：pending、fulfilled、rejected。Promise.all、Promise.race、Promise.allSettled处理多个Promise。async函数返回Promise，await等待Promise解决。事件循环：调用栈→微任务队列→宏任务队列。微任务：Promise.then、MutationObserver。宏任务：setTimeout、setInterval、I/O。",
+          "key_points": ["Promise机制", "async/await", "事件循环", "微任务宏任务"]
+        },
+        {
+          "topic": "ES6+新特性",
+          "detail": "ES6主要特性：let/const、箭头函数、模板字符串、解构赋值、默认参数、展开运算符、类、模块、Promise、Map/Set、Symbol、Proxy、Reflect。ES2017+：async/await、Object.entries/values、可选链?.、空值合并??、BigInt、动态import、类私有字段。Babel将新语法转译为兼容代码。",
+          "key_points": ["ES6核心", "模块化", "Proxy代理", "ES2020+特性"]
+        }
+      ]
+    },
+    "css": {
+      "title": "CSS技术",
+      "content": [
+        {
+          "topic": "盒模型与布局",
+          "detail": "CSS盒模型：content-box(标准)、border-box(IE)。盒模型属性：width/height、padding、border、margin。布局方式：Flexbox(一维布局)、Grid(二维布局)、Float(浮动)、Position(定位)。Flexbox属性：flex-direction、justify-content、align-items、flex-wrap。Grid属性：grid-template-columns/rows、grid-gap、grid-area。",
+          "key_points": ["盒模型", "Flexbox", "Grid", "响应式布局"]
+        },
+        {
+          "topic": "CSS选择器与优先级",
+          "detail": "选择器类型：元素、类、ID、属性、伪类、伪元素、组合器。优先级计算：内联样式(1000) > ID(100) > 类/属性/伪类(10) > 元素/伪元素(1)。!important覆盖所有。层叠规则：来源(作者>用户>浏览器)、特异性、顺序。CSS变量(--var)实现主题切换。",
+          "key_points": ["选择器类型", "优先级计算", "层叠规则", "CSS变量"]
+        },
+        {
+          "topic": "动画与过渡",
+          "detail": "transition实现简单过渡：property、duration、timing-function、delay。animation实现复杂动画：@keyframes定义关键帧，animation属性控制播放。性能优化：transform和opacity触发GPU加速，避免layout和paint。will-change提示浏览器优化。requestAnimationFrame实现流畅动画。",
+          "key_points": ["transition", "animation", "性能优化", "requestAnimationFrame"]
+        }
+      ]
+    },
+    "react": {
+      "title": "React框架",
+      "content": [
+        {
+          "topic": "React核心概念",
+          "detail": "React是声明式UI库，核心思想：组件化、虚拟DOM、单向数据流。JSX是JavaScript语法扩展，编译为React.createElement。组件类型：函数组件、类组件。Props只读，State可变。setState异步批量更新。虚拟DOM通过Diff算法比较，最小化DOM操作。",
+          "key_points": ["JSX原理", "组件化", "虚拟DOM", "Diff算法"]
+        },
+        {
+          "topic": "React Hooks",
+          "detail": "Hooks让函数组件拥有状态。useState管理状态，返回[state, setState]。useEffect处理副作用，第二个参数控制执行时机。useContext访问上下文。useReducer管理复杂状态。useMemo缓存计算值，useCallback缓存函数。自定义Hooks复用逻辑。Hooks规则：只在顶层调用、只在React函数中调用。",
+          "key_points": ["useState/useEffect", "useContext", "useMemo/useCallback", "自定义Hooks"]
+        },
+        {
+          "topic": "React性能优化",
+          "detail": "性能优化策略：React.memo避免不必要渲染、useMemo/useCallback缓存、虚拟列表(react-window)处理大数据、代码分割(React.lazy+Suspense)、shouldComponentUpdate/PureComponent。状态管理：Redux(单向数据流)、MobX(响应式)、Zustand(轻量)、Context API(简单场景)。",
+          "key_points": ["React.memo", "虚拟列表", "代码分割", "状态管理"]
+        }
+      ]
+    },
+    "vue": {
+      "title": "Vue框架",
+      "content": [
+        {
+          "topic": "Vue核心原理",
+          "detail": "Vue是渐进式框架，核心：响应式系统、虚拟DOM、组件化。响应式原理：Vue2使用Object.defineProperty劫持属性，Vue3使用Proxy代理。模板编译为渲染函数。指令系统：v-bind、v-model、v-if/v-show、v-for、v-on。计算属性computed缓存结果，侦听器watch监听变化。",
+          "key_points": ["响应式原理", "模板编译", "指令系统", "computed/watch"]
+        },
+        {
+          "topic": "Vue3新特性",
+          "detail": "Vue3主要改进：Composition API逻辑复用、Proxy响应式、Fragments多根节点、Teleport传送门、Suspense异步组件、更好的TypeScript支持。Composition API：setup函数、ref/reactive、computed、watch、生命周期钩子。性能提升：树摇优化、静态提升、PatchFlag。",
+          "key_points": ["Composition API", "Proxy响应式", "Teleport/Suspense", "性能优化"]
+        }
+      ]
+    },
+    "engineering": {
+      "title": "前端工程化",
+      "content": [
+        {
+          "topic": "构建工具",
+          "detail": "Webpack：模块打包器，支持代码分割、懒加载、Tree Shaking。配置：entry、output、module(loader)、plugins。Vite：基于ESM的快速开发服务器，生产使用Rollup。Snowpack、Parcel等替代方案。Babel转译新语法，core-js提供polyfill。",
+          "key_points": ["Webpack配置", "Vite原理", "Loader/Plugin", "Babel转译"]
+        },
+        {
+          "topic": "性能优化",
+          "detail": "加载优化：代码分割、懒加载、预加载、资源压缩、CDN、HTTP缓存。渲染优化：减少重排重绘、使用transform、虚拟列表、防抖节流。网络优化：减少请求数、启用Gzip、使用HTTP2、图片优化(WebP、懒加载)。监控：Lighthouse、Web Vitals(Core Web Vitals：LCP、FID、CLS)。",
+          "key_points": ["代码分割", "渲染优化", "网络优化", "Web Vitals"]
+        }
+      ]
+    }
+  },
+  "evaluation_criteria": {
+    "excellent": "深入理解JavaScript原型链、闭包、异步编程，熟练使用React/Vue框架，掌握前端工程化和性能优化",
+    "good": "掌握JavaScript核心概念，能够使用前端框架开发，了解工程化工具",
+    "average": "了解HTML/CSS/JavaScript基础，能够完成简单页面开发",
+    "poor": "基础知识薄弱，需要大量指导"
+  }
+}

@@ -1,0 +1,413 @@
+{
+  "steps": [
+    {
+      "step": "后端 :8788",
+      "ok": true
+    },
+    {
+      "step": "前端 :5181（localhost）",
+      "ok": true
+    },
+    {
+      "step": "打开 http://localhost:5181/?token=dev-token",
+      "ok": true
+    },
+    {
+      "step": "勾选必需授权项（base=true）",
+      "ok": true
+    },
+    {
+      "step": "点击开始按钮：同意并开始面试",
+      "ok": true
+    },
+    {
+      "step": "第 1 题提交作答：OK",
+      "ok": true
+    },
+    {
+      "step": "第 2 题提交作答：OK",
+      "ok": true
+    },
+    {
+      "step": "第 3 题提交作答：OK",
+      "ok": true
+    },
+    {
+      "step": "点击结束面试：OK",
+      "ok": true
+    }
+  ],
+  "wsFrames": [
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "session.create",
+      "seq": 1,
+      "data": "{\"v\":1,\"type\":\"session.create\",\"seq\":1,\"ts\":1791269071065,\"session_id\":\"\",\"payload\":{\"position\":\"\",\"n_questions\":0,\"adaptive\":false,\"physio_enabled\":false,\"resume\":false,\"last_seq\":0}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "consent.grant",
+      "seq": 2,
+      "data": "{\"v\":1,\"type\":\"consent.grant\",\"seq\":2,\"ts\":1791269071065,\"session_id\":\"\",\"payload\":{\"base\":true,\"camera\":false,\"physiology\":false,\"screen\":false,\"media_recording\":false}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 1,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":1,\"ts\":237532297,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"idle\",\"to\":\"setup\",\"reason\":\"create\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 2,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":2,\"ts\":237532298,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"setup\",\"to\":\"greeting\",\"reason\":\"consent_ok\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 3,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":3,\"ts\":237532298,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"greeting\",\"to\":\"asking\",\"reason\":\"greeting_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 4,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":4,\"ts\":237532298,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"asking\",\"to\":\"listening\",\"reason\":\"tts_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "question.start",
+      "seq": 5,
+      "data": "{\"v\":1,\"type\":\"question.start\",\"seq\":5,\"ts\":237532298,\"session_id\":\"dev-dev-toke\",\"payload\":{\"turn_id\":\"dev-dev-toke-t0\",\"turn_index\":0,\"text\":\"请用两分钟介绍一下你自己和最近做过的项目\",\"tts\":false,\"audio_sample_rate\":0}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "answer.text",
+      "seq": 3,
+      "data": "{\"v\":1,\"type\":\"answer.text\",\"seq\":3,\"ts\":1791269071984,\"session_id\":\"\",\"payload\":{\"text\":\"这是第 1 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\"}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "answer.commit",
+      "seq": 4,
+      "data": "{\"v\":1,\"type\":\"answer.commit\",\"seq\":4,\"ts\":1791269071984,\"session_id\":\"\",\"payload\":{}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "transcript.partial",
+      "seq": 6,
+      "data": "{\"v\":1,\"type\":\"transcript.partial\",\"seq\":6,\"ts\":237533197,\"session_id\":\"dev-dev-toke\",\"payload\":{\"text\":\"这是第 1 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 7,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":7,\"ts\":237533198,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"listening\",\"to\":\"processing\",\"reason\":\"answer_commit\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 8,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":8,\"ts\":237533198,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"processing\",\"to\":\"asking\",\"reason\":\"eval_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "transcript.final",
+      "seq": 9,
+      "data": "{\"v\":1,\"type\":\"transcript.final\",\"seq\":9,\"ts\":237533198,\"session_id\":\"dev-dev-toke\",\"payload\":{\"text\":\"这是第 1 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\",\"turn_id\":\"dev-dev-toke-t0\",\"turn_index\":0}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "eval.done",
+      "seq": 10,
+      "data": "{\"v\":1,\"type\":\"eval.done\",\"seq\":10,\"ts\":237533198,\"session_id\":\"dev-dev-toke\",\"payload\":{\"turn_id\":\"dev-dev-toke-t0\",\"turn_index\":0,\"score\":65.0,\"dims\":{\"technical\":70.0,\"communication\":65.0,\"completeness\":60.0,\"problem_solving\":68.0,\"teamwork\":72.0,\"leadership\":55.0},\"feedback\":\"fake feedback\",\"provider\":\"fake\",\"confidence\":0.9,\"degraded\":false}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 11,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":11,\"ts\":237533198,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"asking\",\"to\":\"listening\",\"reason\":\"tts_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "question.start",
+      "seq": 12,
+      "data": "{\"v\":1,\"type\":\"question.start\",\"seq\":12,\"ts\":237533198,\"session_id\":\"dev-dev-toke\",\"payload\":{\"turn_id\":\"dev-dev-toke-t1\",\"turn_index\":1,\"text\":\"讲一个你解决过的技术难题\",\"tts\":false,\"audio_sample_rate\":0}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "answer.text",
+      "seq": 5,
+      "data": "{\"v\":1,\"type\":\"answer.text\",\"seq\":5,\"ts\":1791269073598,\"session_id\":\"\",\"payload\":{\"text\":\"这是第 2 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\"}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "answer.commit",
+      "seq": 6,
+      "data": "{\"v\":1,\"type\":\"answer.commit\",\"seq\":6,\"ts\":1791269073598,\"session_id\":\"\",\"payload\":{}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "transcript.partial",
+      "seq": 13,
+      "data": "{\"v\":1,\"type\":\"transcript.partial\",\"seq\":13,\"ts\":237534811,\"session_id\":\"dev-dev-toke\",\"payload\":{\"text\":\"这是第 2 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 14,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":14,\"ts\":237534811,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"listening\",\"to\":\"processing\",\"reason\":\"answer_commit\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 15,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":15,\"ts\":237534811,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"processing\",\"to\":\"asking\",\"reason\":\"eval_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "transcript.final",
+      "seq": 16,
+      "data": "{\"v\":1,\"type\":\"transcript.final\",\"seq\":16,\"ts\":237534811,\"session_id\":\"dev-dev-toke\",\"payload\":{\"text\":\"这是第 2 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\",\"turn_id\":\"dev-dev-toke-t1\",\"turn_index\":1}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "eval.done",
+      "seq": 17,
+      "data": "{\"v\":1,\"type\":\"eval.done\",\"seq\":17,\"ts\":237534811,\"session_id\":\"dev-dev-toke\",\"payload\":{\"turn_id\":\"dev-dev-toke-t1\",\"turn_index\":1,\"score\":65.0,\"dims\":{\"technical\":70.0,\"communication\":65.0,\"completeness\":60.0,\"problem_solving\":68.0,\"teamwork\":72.0,\"leadership\":55.0},\"feedback\":\"fake feedback\",\"provider\":\"fake\",\"confidence\":0.9,\"degraded\":false}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 18,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":18,\"ts\":237534811,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"asking\",\"to\":\"listening\",\"reason\":\"tts_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "question.start",
+      "seq": 19,
+      "data": "{\"v\":1,\"type\":\"question.start\",\"seq\":19,\"ts\":237534811,\"session_id\":\"dev-dev-toke\",\"payload\":{\"turn_id\":\"dev-dev-toke-t2\",\"turn_index\":2,\"text\":\"你如何与团队协作推进一个有分歧的方案\",\"tts\":false,\"audio_sample_rate\":0}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "answer.text",
+      "seq": 7,
+      "data": "{\"v\":1,\"type\":\"answer.text\",\"seq\":7,\"ts\":1791269075219,\"session_id\":\"\",\"payload\":{\"text\":\"这是第 3 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\"}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "answer.commit",
+      "seq": 8,
+      "data": "{\"v\":1,\"type\":\"answer.commit\",\"seq\":8,\"ts\":1791269075219,\"session_id\":\"\",\"payload\":{}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "transcript.partial",
+      "seq": 20,
+      "data": "{\"v\":1,\"type\":\"transcript.partial\",\"seq\":20,\"ts\":237536432,\"session_id\":\"dev-dev-toke\",\"payload\":{\"text\":\"这是第 3 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 21,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":21,\"ts\":237536432,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"listening\",\"to\":\"processing\",\"reason\":\"answer_commit\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 22,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":22,\"ts\":237536432,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"processing\",\"to\":\"asking\",\"reason\":\"eval_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "transcript.final",
+      "seq": 23,
+      "data": "{\"v\":1,\"type\":\"transcript.final\",\"seq\":23,\"ts\":237536432,\"session_id\":\"dev-dev-toke\",\"payload\":{\"text\":\"这是第 3 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\",\"turn_id\":\"dev-dev-toke-t2\",\"turn_index\":2}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "eval.done",
+      "seq": 24,
+      "data": "{\"v\":1,\"type\":\"eval.done\",\"seq\":24,\"ts\":237536432,\"session_id\":\"dev-dev-toke\",\"payload\":{\"turn_id\":\"dev-dev-toke-t2\",\"turn_index\":2,\"score\":65.0,\"dims\":{\"technical\":70.0,\"communication\":65.0,\"completeness\":60.0,\"problem_solving\":68.0,\"teamwork\":72.0,\"leadership\":55.0},\"feedback\":\"fake feedback\",\"provider\":\"fake\",\"confidence\":0.9,\"degraded\":false}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 25,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":25,\"ts\":237536432,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"asking\",\"to\":\"candidate_qa\",\"reason\":\"no_more_questions\"}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "type": "control.end",
+      "seq": 9,
+      "data": "{\"v\":1,\"type\":\"control.end\",\"seq\":9,\"ts\":1791269076422,\"session_id\":\"\",\"payload\":{}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 26,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":26,\"ts\":237537635,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"candidate_qa\",\"to\":\"closing\",\"reason\":\"qa_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 27,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":27,\"ts\":237537635,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"closing\",\"to\":\"reporting\",\"reason\":\"closing_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "state.changed",
+      "seq": 28,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":28,\"ts\":237537635,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"reporting\",\"to\":\"completed\",\"reason\":\"report_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "type": "report.ready",
+      "seq": 29,
+      "data": "{\"v\":1,\"type\":\"report.ready\",\"seq\":29,\"ts\":237537635,\"session_id\":\"dev-dev-toke\",\"payload\":{\"session_id\":\"dev-dev-toke\",\"available\":true,\"reason\":null,\"score\":65.0,\"level\":\"C\",\"dims\":{\"technical\":70.0,\"communication\":65.0,\"completeness\":60.0,\"problem_solving\":68.0,\"teamwork\":72.0,\"leadership\":55.0},\"effective_weights\":{\"technical\":0.16666666666666666,\"communication\":0.16666666666666666,\"completeness\":0.16666666666666666,\"problem_solving\":0.16666666666666666,\"teamwork\":0.16666666666666666,\"leadership\":0.16666666666666666},\"redistributed\":{\"technical\":0.0,\"communication\":0.0,\"completeness\":0.0,\""
+    }
+  ],
+  "console": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    }
+  ],
+  "exceptions": [],
+  "dom": {
+    "reportText": "面试报告\n65.0 分\n等级：C\n维度得分\n各评分维度得分与生效权重\n维度\t得分\t生效权重\n技术能力\t70.0\t16.7%\n沟通表达\t65.0\t16.7%\n完整度\t60.0\t16.7%\n问题解决\t68.0\t16.7%\n团队协作\t72.0\t16.7%\n领导力\t55.0\t16.7%\n生理维度\n\n未启用（本场未采集生理信号）\n\n反事实（关闭某维度后的总分）\n若剔除「技术能力」：64.0 分\n若剔除「沟通表达」：65.0 分\n若剔除「完整度」：66.0 分\n若剔除「问题解决」：64.4 分\n若剔除「团队协作」：63.6 分\n若剔除「领导力」：67.0 分\n评分归因\n所有维度可靠性达标，未发生权重重分配\n生理维度未启用（本场不采集、不计入）\n\n口径版本：rubric-v1；计分轮次 3，缓冲轮次 0。",
+    "turns": [
+      {
+        "q": "请用两分钟介绍一下你自己和最近做过的项目",
+        "scored": true
+      },
+      {
+        "q": "讲一个你解决过的技术难题",
+        "scored": true
+      },
+      {
+        "q": "你如何与团队协作推进一个有分歧的方案",
+        "scored": true
+      }
+    ],
+    "fsmLine": "阶段：已完成",
+    "bodyText": "已连接\n阶段：已完成\n第 3 题\n你如何与团队协作推进一个有分歧的方案\n当前题目\n\n你如何与团队协作推进一个有分歧的方案\n\n你的作答\n作答输入框\n提交作答\n录音未接入（当前仅文本作答）。\n跳过本题\n结束面试\n转写\n这是第 1 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\n这是第 2 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\n这是第 3 题的回答：我在上一份工作里负责过一个召回链路的重构，把离线指标和线上效果接起来，前后一共做了三个月。\n逐轮评估\n请用两分钟介绍一下你自己和最近做过的项目65.0 分（provider=fake，confidence=0.90） fake feedback\n讲一个你解决过的技术难题65.0 分（provider=fake，confidence=0.90） fake feedback\n你如何与团队协作推进一个有分歧的方案65.0 分（provider=fake，confidence=0.90） fake feedback\n面试报告\n65.0 分\n等级：C\n维度得分\n各评分维度得分与生效权重\n维度\t得分\t生效权重\n技术能力\t70.0\t16.7%\n沟通表达\t65.0\t16.7%\n完整度\t60.0\t16.7%\n问题解决\t68.0\t16.7%\n团队协作\t72.0\t16.7%\n领导力\t55.0\t16.7%\n生理维度\n\n未启用（本场未采集生理信号）\n\n反事实（关闭某维度后的总分）\n若剔除「技术能力」：64.0 分\n若剔除「沟通表达」：65.0 分\n若剔除「完整度」：66.0 分\n若剔除「问题解决」：64.4 分\n若剔除「团队协作」：63.6 分\n若剔除「领导力」：67.0 分\n评分归因\n所有维度可靠性达标，未发生权重重分配\n生理维度未启用（本场不采集、不计入）\n\n口径版本：rubric-v1；计分轮次 3，缓冲轮次 0。\n\n本次未开启摄像头：视频/生理维度不计入，其余维度按权重重分配，总分可比。"
+  },
+  "verdict": {
+    "sawInterviewRoom": true,
+    "submitted": [
+      {
+        "q": 1,
+        "result": "OK"
+      },
+      {
+        "q": 2,
+        "result": "OK"
+      },
+      {
+        "q": 3,
+        "result": "OK"
+      }
+    ],
+    "sawReport": true,
+    "reportRendered": true,
+    "framesSent": 9,
+    "framesReceived": 29,
+    "frontendCreatedSession": true,
+    "frontendGrantedConsent": true,
+    "frontendCommittedAnswers": 3,
+    "serverSentQuestions": 3,
+    "serverSentEvals": 3,
+    "unauthorized": false,
+    "downlinkSeqCount": 29,
+    "downlinkSeqAllPositive": true,
+    "downlinkSeqStrictlyIncreasing": true,
+    "downlinkSeqZeroCount": 0,
+    "downlinkSeqs": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "turnCount": 3,
+    "turnCountExpected": 3,
+    "turnsAllHaveQuestion": true,
+    "turnsScoredCount": 3,
+    "fsmLine": "阶段：已完成"
+  }
+}

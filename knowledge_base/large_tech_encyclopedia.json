@@ -1,0 +1,274 @@
+{
+  "category": "大型技术百科全书",
+  "description": "包含各类技术领域的详细知识，涵盖编程语言、框架、工具、方法论等",
+  "encyclopedia": {
+    "programming_languages": {
+      "title": "编程语言",
+      "languages": [
+        {
+          "name": "Java",
+          "paradigm": ["面向对象", "命令式"],
+          "created_by": "James Gosling",
+          "created_year": 1995,
+          "jvm_based": true,
+          "typing": "静态类型",
+          "memory_management": "垃圾回收",
+          "use_cases": ["企业应用", "Android开发", "大数据", "云计算"],
+          "popularity_rank": 3,
+          "detailed_description": "Java是一种广泛使用的面向对象编程语言，由Sun Microsystems（现Oracle）于1995年发布。Java的设计理念是'一次编写，到处运行'（Write Once, Run Anywhere），通过Java虚拟机（JVM）实现跨平台能力。Java具有强类型、自动内存管理、丰富的标准库等特点。Java生态系统包括Spring框架、Hibernate、Maven/Gradle构建工具等。Java 8引入了Lambda表达式和Stream API，Java 11及以后版本采用新的发布周期，每6个月发布一个新版本，每3年发布一个LTS版本。"
+        },
+        {
+          "name": "Python",
+          "paradigm": ["面向对象", "函数式", "命令式", "结构化"],
+          "created_by": "Guido van Rossum",
+          "created_year": 1991,
+          "jvm_based": false,
+          "typing": "动态类型",
+          "memory_management": "垃圾回收",
+          "use_cases": ["Web开发", "数据科学", "人工智能", "自动化脚本"],
+          "popularity_rank": 1,
+          "detailed_description": "Python是一种解释型、高级、通用的编程语言。Python的设计哲学强调代码的可读性和简洁性，使用缩进来表示代码块。Python拥有庞大的标准库和第三方库生态系统，包括NumPy、Pandas用于数据分析，TensorFlow、PyTorch用于机器学习，Django、Flask用于Web开发。Python 2于2020年停止支持，目前主流使用Python 3。Python在数据科学和人工智能领域占据主导地位。"
+        },
+        {
+          "name": "JavaScript",
+          "paradigm": ["事件驱动", "函数式", "面向对象", "命令式"],
+          "created_by": "Brendan Eich",
+          "created_year": 1995,
+          "jvm_based": false,
+          "typing": "动态类型",
+          "memory_management": "垃圾回收",
+          "use_cases": ["Web前端", "Node.js后端", "移动应用", "桌面应用"],
+          "popularity_rank": 2,
+          "detailed_description": "JavaScript是一种轻量级、解释型的编程语言，最初用于网页脚本，现已成为全栈开发语言。JavaScript运行在浏览器中，也可通过Node.js运行在服务器端。ES6（ECMAScript 2015）引入了类、模块、箭头函数、Promise等重要特性。现代JavaScript开发使用npm/yarn包管理器，Webpack/Vite构建工具，React/Vue/Angular前端框架。TypeScript是JavaScript的超集，添加了静态类型系统。"
+        },
+        {
+          "name": "Go",
+          "paradigm": ["命令式", "并发", "结构化"],
+          "created_by": "Robert Griesemer, Rob Pike, Ken Thompson",
+          "created_year": 2009,
+          "jvm_based": false,
+          "typing": "静态类型",
+          "memory_management": "垃圾回收",
+          "use_cases": ["云原生", "微服务", "网络编程", "DevOps工具"],
+          "popularity_rank": 8,
+          "detailed_description": "Go（又称Golang）是Google开发的一种静态类型、编译型编程语言。Go的设计目标是简单、高效、并发友好。Go的并发模型基于Goroutine和Channel，使得并发编程变得简单。Go编译速度快，生成的可执行文件无依赖，适合构建云原生应用。Docker、Kubernetes等云原生项目使用Go开发。Go 1.18引入了泛型支持。"
+        },
+        {
+          "name": "Rust",
+          "paradigm": ["多范式", "并发", "函数式", "面向对象"],
+          "created_by": "Graydon Hoare",
+          "created_year": 2010,
+          "jvm_based": false,
+          "typing": "静态类型",
+          "memory_management": "所有权系统",
+          "use_cases": ["系统编程", "WebAssembly", "嵌入式", "区块链"],
+          "popularity_rank": 15,
+          "detailed_description": "Rust是一种系统编程语言，注重安全性、并发性和性能。Rust的所有权系统（Ownership）在编译时防止空指针、数据竞争等内存错误，无需垃圾回收器。Rust的零成本抽象允许高级特性不带来运行时开销。Rust被用于开发Firefox的渲染引擎Servo、Discord客户端、AWS Firecracker等。Rust的学习曲线较陡，但能提供C/C++级别的性能和安全保证。"
+        }
+      ]
+    },
+    "frameworks": {
+      "title": "开发框架",
+      "categories": [
+        {
+          "category": "Web框架",
+          "frameworks": [
+            {
+              "name": "Spring Boot",
+              "language": "Java",
+              "type": "全栈框架",
+              "description": "Spring Boot简化了基于Spring的应用开发，提供自动配置、嵌入式服务器、生产级监控等功能。",
+              "features": ["自动配置", "起步依赖", "Actuator监控", "Spring Data"]
+            },
+            {
+              "name": "Django",
+              "language": "Python",
+              "type": "全栈框架",
+              "description": "Django是Python的高级Web框架，鼓励快速开发和简洁实用的设计。",
+              "features": ["ORM", "Admin后台", "认证系统", "表单处理"]
+            },
+            {
+              "name": "React",
+              "language": "JavaScript",
+              "type": "前端框架",
+              "description": "React是Facebook开发的用于构建用户界面的JavaScript库，采用组件化和虚拟DOM。",
+              "features": ["组件化", "虚拟DOM", "Hooks", "JSX"]
+            },
+            {
+              "name": "Vue.js",
+              "language": "JavaScript",
+              "type": "前端框架",
+              "description": "Vue.js是渐进式JavaScript框架，易于上手，灵活高效。",
+              "features": ["响应式数据", "组件系统", "指令系统", "Composition API"]
+            },
+            {
+              "name": "Express",
+              "language": "JavaScript",
+              "type": "后端框架",
+              "description": "Express是Node.js的极简Web框架，提供健壮的HTTP工具。",
+              "features": ["路由", "中间件", "模板引擎", "错误处理"]
+            }
+          ]
+        }
+      ]
+    },
+    "databases": {
+      "title": "数据库系统",
+      "types": [
+        {
+          "type": "关系型数据库",
+          "databases": [
+            {
+              "name": "MySQL",
+              "vendor": "Oracle",
+              "license": "GPL/商业",
+              "features": ["ACID", "主从复制", "分区", "存储引擎"],
+              "use_cases": ["Web应用", "OLTP", "日志系统"]
+            },
+            {
+              "name": "PostgreSQL",
+              "vendor": "社区",
+              "license": "PostgreSQL License",
+              "features": ["ACID", "JSON支持", "全文检索", "GIS扩展"],
+              "use_cases": ["企业应用", "地理信息", "数据分析"]
+            },
+            {
+              "name": "Oracle Database",
+              "vendor": "Oracle",
+              "license": "商业",
+              "features": ["ACID", "RAC集群", "分区", "高级安全"],
+              "use_cases": ["金融", "电信", "大型企业"]
+            }
+          ]
+        },
+        {
+          "type": "NoSQL数据库",
+          "databases": [
+            {
+              "name": "MongoDB",
+              "category": "文档数据库",
+              "features": ["BSON文档", "灵活模式", "水平扩展", "聚合管道"],
+              "use_cases": ["内容管理", "实时分析", "移动应用"]
+            },
+            {
+              "name": "Redis",
+              "category": "键值存储",
+              "features": ["内存存储", "丰富数据结构", "持久化", "集群"],
+              "use_cases": ["缓存", "会话存储", "实时排行榜"]
+            },
+            {
+              "name": "Elasticsearch",
+              "category": "搜索引擎",
+              "features": ["全文检索", "分布式", "实时分析", "REST API"],
+              "use_cases": ["日志分析", "站内搜索", "监控"]
+            },
+            {
+              "name": "Cassandra",
+              "category": "宽列存储",
+              "features": ["分布式", "高可用", "线性扩展", "最终一致"],
+              "use_cases": ["时序数据", "物联网", "消息系统"]
+            }
+          ]
+        }
+      ]
+    },
+    "tools": {
+      "title": "开发工具",
+      "categories": [
+        {
+          "category": "版本控制",
+          "tools": [
+            {
+              "name": "Git",
+              "type": "分布式版本控制",
+              "description": "Git是目前最流行的分布式版本控制系统，由Linus Torvalds创建。",
+              "features": ["分支管理", "分布式", "轻量", "快速"],
+              "platforms": ["GitHub", "GitLab", "Bitbucket", "Gitee"]
+            },
+            {
+              "name": "SVN",
+              "type": "集中式版本控制",
+              "description": "Apache Subversion是集中式版本控制系统，适合二进制文件管理。",
+              "features": ["目录版本控制", "原子提交", "权限管理"]
+            }
+          ]
+        },
+        {
+          "category": "构建工具",
+          "tools": [
+            {
+              "name": "Maven",
+              "language": "Java",
+              "description": "Maven是Java项目管理和构建工具，基于项目对象模型（POM）。",
+              "features": ["依赖管理", "生命周期", "插件系统", "仓库管理"]
+            },
+            {
+              "name": "Gradle",
+              "language": "Java/Kotlin",
+              "description": "Gradle是现代化的构建工具，使用Groovy或Kotlin DSL。",
+              "features": ["增量构建", "构建缓存", "灵活配置", "多项目构建"]
+            },
+            {
+              "name": "Webpack",
+              "language": "JavaScript",
+              "description": "Webpack是JavaScript模块打包工具。",
+              "features": ["模块打包", "代码分割", "Loader", "Plugin"]
+            }
+          ]
+        },
+        {
+          "category": "CI/CD工具",
+          "tools": [
+            {
+              "name": "Jenkins",
+              "type": "自动化服务器",
+              "description": "Jenkins是开源的自动化服务器，支持构建、部署、自动化。",
+              "features": ["插件生态", "Pipeline", "分布式构建", "多平台支持"]
+            },
+            {
+              "name": "GitLab CI",
+              "type": "集成CI/CD",
+              "description": "GitLab内置的CI/CD工具，与代码仓库紧密集成。",
+              "features": ["YAML配置", "Runner", "Auto DevOps", "安全扫描"]
+            },
+            {
+              "name": "GitHub Actions",
+              "type": "工作流自动化",
+              "description": "GitHub提供的CI/CD和自动化工作流服务。",
+              "features": ["事件驱动", "Marketplace", "Matrix构建", "自托管Runner"]
+            }
+          ]
+        }
+      ]
+    },
+    "methodologies": {
+      "title": "开发方法论",
+      "methods": [
+        {
+          "name": "敏捷开发",
+          "description": "敏捷开发强调迭代、增量交付、客户协作和响应变化。",
+          "principles": ["个体和互动", "工作的软件", "客户合作", "响应变化"],
+          "frameworks": ["Scrum", "Kanban", "XP", "Lean"]
+        },
+        {
+          "name": "DevOps",
+          "description": "DevOps是开发（Dev）和运维（Ops）的结合，强调协作和自动化。",
+          "practices": ["CI/CD", "IaC", "监控", "自动化测试"],
+          "tools": ["Docker", "Kubernetes", "Terraform", "Ansible"]
+        },
+        {
+          "name": "测试驱动开发",
+          "description": "TDD是先写测试再写代码的开发方式。",
+          "cycle": ["Red", "Green", "Refactor"],
+          "benefits": ["设计指导", "回归测试", "文档", "信心"]
+        },
+        {
+          "name": "领域驱动设计",
+          "description": "DDD是通过深入理解业务领域来指导软件设计的方法。",
+          "concepts": ["实体", "值对象", "聚合", "领域服务", "仓储", "工厂"],
+          "strategic_patterns": ["限界上下文", "上下文映射", "子域"]
+        }
+      ]
+    }
+  }
+}

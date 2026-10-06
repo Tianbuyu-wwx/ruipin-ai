@@ -1,0 +1,98 @@
+{
+  "steps": [
+    {
+      "step": "后端 :8787",
+      "ok": true
+    },
+    {
+      "step": "前端 :5180（localhost）",
+      "ok": true
+    },
+    {
+      "step": "打开 http://localhost:5180/?token=dev-token",
+      "ok": true
+    },
+    {
+      "step": "勾选必需授权项（base=true）",
+      "ok": true
+    },
+    {
+      "step": "点击开始按钮：同意并开始面试",
+      "ok": true
+    }
+  ],
+  "wsFrames": [
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "data": "{\"v\":1,\"type\":\"session.create\",\"seq\":1,\"ts\":1791268171836,\"session_id\":\"\",\"payload\":{\"position\":\"\",\"n_questions\":0,\"adaptive\":false,\"physio_enabled\":false,\"resume\":false,\"last_seq\":0}}"
+    },
+    {
+      "dir": "→ 前端发出",
+      "opcode": 1,
+      "data": "{\"v\":1,\"type\":\"consent.grant\",\"seq\":2,\"ts\":1791268171836,\"session_id\":\"\",\"payload\":{\"base\":true,\"camera\":false,\"physiology\":false,\"screen\":false,\"media_recording\":false}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":0,\"ts\":236633071,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"idle\",\"to\":\"setup\",\"reason\":\"create\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":0,\"ts\":236633071,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"setup\",\"to\":\"greeting\",\"reason\":\"consent_ok\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":0,\"ts\":236633071,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"greeting\",\"to\":\"asking\",\"reason\":\"greeting_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "data": "{\"v\":1,\"type\":\"state.changed\",\"seq\":0,\"ts\":236633071,\"session_id\":\"dev-dev-toke\",\"payload\":{\"from\":\"asking\",\"to\":\"listening\",\"reason\":\"tts_done\"}}"
+    },
+    {
+      "dir": "← 后端下发",
+      "opcode": 1,
+      "data": "{\"v\":1,\"type\":\"question.start\",\"seq\":0,\"ts\":236633071,\"session_id\":\"dev-dev-toke\",\"payload\":{\"turn_id\":\"dev-dev-toke-t0\",\"text\":\"请用两分钟介绍一下你自己和最近做过的项目\",\"tts\":false,\"audio_sample_rate\":0}}"
+    }
+  ],
+  "console": [
+    {
+      "type": "debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold"
+    },
+    {
+      "type": "warning",
+      "text": "The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. https://developer.chrome.com/blog/autoplay/#web_audio"
+    }
+  ],
+  "exceptions": [],
+  "dom": {
+    "buttonsBefore": "[\"同意并开始面试\",\"暂不参加\"]",
+    "textBefore": "开始前请阅读并选择授权项\n\n各项授权相互独立。除\"参加面试\"外均可拒绝，拒绝不会导致面试无法进行。\n\n授权项（分项勾选）\n参加本次模拟面试\n\n必需。不勾选则无法开始面试。\n\n开启摄像头（行程/表情分析，可选）\n\n可选增强。拒绝即可，面试与评分照常进行（相应维度按权重重分配，不会压低总分）。\n\n生理信号分析（心率/应激恢复，可选）\n\n敏感个人信息，需单独同意。我们仅从画面提取脉搏相关统计量，不保存原始视频。拒绝也可继续面试。\n\n未开启摄像头：生理信号（rPPG）从面部画面提取，缺少摄像头时不可用。不开摄像头也可完成面试，分数照常可比。\n\n共享屏幕（可选）\n\n可选增强，用于演示类题目。拒绝不影响其余流程。\n\n同意并开始面试\n暂不参加\n\n请勾选\"参加本次模拟面试\"后再开始。\n\n应聘岗位（可选）：",
+    "textAfter": "已连接\n阶段：请作答\n第 1 题\n请用两分钟介绍一下你自己和最近做过的项目\n当前题目\n\n请用两分钟介绍一下你自己和最近做过的项目\n\n你的作答\n作答输入框\n提交作答\n录音未接入（当前仅文本作答）。\n跳过本题\n结束面试\n转写\n\n（暂无转写）\n\n逐轮评估\n请用两分钟介绍一下你自己和最近做过的项目 未评分\n\n本次未开启摄像头：视频/生理维度不计入，其余维度按权重重分配，总分可比。",
+    "statusText": "已连接\n阶段：请作答\n第 1 题"
+  },
+  "verdict": {
+    "sawInterviewRoom": true,
+    "sawQuestion": true,
+    "sawReport": false,
+    "framesSent": 2,
+    "framesReceived": 5,
+    "frontendCreatedSession": true,
+    "frontendGrantedConsent": true,
+    "serverSentQuestion": true,
+    "serverSentState": true,
+    "unauthorized": false
+  }
+}

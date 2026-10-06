@@ -1,0 +1,108 @@
+[
+  {
+    "stage": "landing",
+    "audit": {
+      "stage": "landing",
+      "theme": "light",
+      "viewport": "1425x900",
+      "checkedElements": 103,
+      "textElements": 32,
+      "overflowX": 0,
+      "overflowY": 534,
+      "beyond": [],
+      "collisions": [],
+      "occlusions": [],
+      "zeroSize": [],
+      "fontFaces": 300,
+      "screenshotViewport": "1440x1434"
+    }
+  },
+  {
+    "stage": "prepare",
+    "audit": {
+      "stage": "prepare",
+      "theme": "light",
+      "viewport": "1425x900",
+      "checkedElements": 78,
+      "textElements": 37,
+      "overflowX": 0,
+      "overflowY": 284,
+      "beyond": [],
+      "collisions": [],
+      "occlusions": [
+        {
+          "a": "div.t",
+          "b": "button.btn",
+          "ratio": 0.42
+        },
+        {
+          "a": "div.t",
+          "b": "button.btn",
+          "ratio": 0.54
+        },
+        {
+          "a": "div.t",
+          "b": "span.",
+          "ratio": 0.59
+        }
+      ],
+      "zeroSize": [],
+      "fontFaces": 300,
+      "screenshotViewport": "1440x1184"
+    }
+  },
+  {
+    "stage": "room",
+    "audit": {
+      "stage": "room",
+      "theme": "light",
+      "viewport": "1440x900",
+      "checkedElements": 100,
+      "textElements": 25,
+      "overflowX": 0,
+      "overflowY": 0,
+      "beyond": [],
+      "collisions": [],
+      "occlusions": [],
+      "zeroSize": [],
+      "fontFaces": 300,
+      "screenshotViewport": "1440x900"
+    }
+  },
+  {
+    "stage": "closing",
+    "audit": {
+      "stage": "closing",
+      "theme": "light",
+      "viewport": "1440x900",
+      "checkedElements": 13,
+      "textElements": 7,
+      "overflowX": 0,
+      "overflowY": 0,
+      "beyond": [],
+      "collisions": [],
+      "occlusions": [],
+      "zeroSize": [],
+      "fontFaces": 300,
+      "screenshotViewport": "1440x900"
+    }
+  },
+  {
+    "stage": "report",
+    "audit": {
+      "stage": "report",
+      "theme": "light",
+      "viewport": "1425x900",
+      "checkedElements": 84,
+      "textElements": 49,
+      "overflowX": 0,
+      "overflowY": 1099,
+      "beyond": [],
+      "collisions": [],
+      "occlusions": [],
+      "zeroSize": [],
+      "fontFaces": 300,
+      "screenshotViewport": "1440x1999"
+    }
+  }
+]

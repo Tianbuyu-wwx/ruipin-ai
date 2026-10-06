@@ -1,0 +1,41 @@
+{
+  "position": "Java后端开发",
+  "position_code": "java_backend",
+  "questions": [
+    {
+      "id": "java-001",
+      "type": "technical",
+      "difficulty": 2,
+      "question": "请解释Java中的多线程实现方式",
+      "keywords": ["Thread", "Runnable", "ExecutorService", "线程池", "并发"]
+    },
+    {
+      "id": "java-002",
+      "type": "technical",
+      "difficulty": 3,
+      "question": "Spring Boot的核心注解有哪些？",
+      "keywords": ["@SpringBootApplication", "@Controller", "@Service", "@Repository", "@Autowired"]
+    },
+    {
+      "id": "java-003",
+      "type": "technical",
+      "difficulty": 2,
+      "question": "MyBatis与JDBC的区别是什么？",
+      "keywords": ["ORM", "SQL映射", "参数绑定", "结果映射", "事务管理"]
+    },
+    {
+      "id": "java-004",
+      "type": "project",
+      "difficulty": 3,
+      "question": "你在项目中如何处理数据库事务？",
+      "keywords": ["事务隔离级别", "事务传播行为", "@Transactional", "回滚", "提交"]
+    },
+    {
+      "id": "java-005",
+      "type": "behavioral",
+      "difficulty": 2,
+      "question": "你如何解决团队中的技术分歧？",
+      "keywords": ["沟通", "协商", "技术评估", "团队合作", "解决方案"]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "position": "Web前端开发",
+  "position_code": "web_frontend",
+  "questions": [
+    {
+      "id": "frontend-001",
+      "type": "technical",
+      "difficulty": 2,
+      "question": "请解释CSS盒模型",
+      "keywords": ["content", "padding", "border", "margin", "盒模型"]
+    },
+    {
+      "id": "frontend-002",
+      "type": "technical",
+      "difficulty": 3,
+      "question": "React中的生命周期钩子有哪些？",
+      "keywords": ["componentDidMount", "componentDidUpdate", "componentWillUnmount", "useEffect", "生命周期"]
+    },
+    {
+      "id": "frontend-003",
+      "type": "technical",
+      "difficulty": 2,
+      "question": "如何优化前端性能？",
+      "keywords": ["缓存", "压缩", "懒加载", "CDN", "性能优化"]
+    },
+    {
+      "id": "frontend-004",
+      "type": "project",
+      "difficulty": 3,
+      "question": "你在项目中如何处理跨域问题？",
+      "keywords": ["CORS", "JSONP", "代理", "跨域", "同源策略"]
+    },
+    {
+      "id": "frontend-005",
+      "type": "behavioral",
+      "difficulty": 2,
+      "question": "你如何学习新技术？",
+      "keywords": ["文档", "实践", "社区", "博客", "学习方法"]
+    }
+  ]
+}

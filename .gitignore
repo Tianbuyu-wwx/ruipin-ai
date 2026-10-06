@@ -1,0 +1,50 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.venv/
+venv/
+env/
+
+# ---- Node / 前端构建 ----
+node_modules/
+v2/web/app/dist/
+*.local
+
+# ---- 模型权重与本地数据（体积大 / 用户隐私，绝不入库）----
+base_model/
+data/*.db
+data/*.sqlite*
+*.db-journal
+
+# ---- 密钥与环境变量 ----
+.secret_key
+.env
+.env.*
+*.pem
+*.key
+!*.pub.key
+
+# ---- 运行日志 ----
+logs/
+*.log
+
+# ---- 工作台私有目录（会话记忆，非项目代码）----
+.workbuddy/
+
+# ---- 设计文档（本地维护，不入库）----
+docs/
+
+# ---- 操作系统 / 编辑器 ----
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/

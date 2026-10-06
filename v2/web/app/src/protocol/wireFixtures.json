@@ -1,0 +1,67 @@
+{
+  "audioHex": "303030307ce8afb7e4bb8be7bb8de4b880e4b88be4bda0e887aae5b7b1303030317ce8afb7e4bb8be7bb8de4b880e4b88be4bda0e887aae5b7b1303030327ce8afb7e4bb8be7bb8de4b880e4b88be4bda0e887aae5b7b1",
+  "generatedBy": "tools/export_wire_fixtures.py",
+  "note": "由 tools/export_wire_fixtures.py 从后端真实产物导出，请勿手工编辑。前端 wireContract.test.ts 消费本文件；tests/test_wire_fixtures.py 保证它不过期。",
+  "opcodes": {
+    "MEDIA_AUDIO": 1,
+    "TTS_AUDIO": 17,
+    "VISEME": 18
+  },
+  "question": "请介绍一下你自己",
+  "serverTypes": {
+    "AVATAR_VISEME": "avatar.viseme",
+    "QUESTION_TTS_CHUNK": "question.tts_chunk"
+  },
+  "ttsChunkBytes": 16,
+  "ttsFramesHex": [
+    "1100000010303030307ce8afb7e4bb8be7bb8de4b8",
+    "110000001080e4b88be4bda0e887aae5b7b1303030",
+    "1100000010317ce8afb7e4bb8be7bb8de4b880e4b8",
+    "11000000108be4bda0e887aae5b7b1303030327ce8",
+    "1100000010afb7e4bb8be7bb8de4b880e4b88be4bd",
+    "1100000007a0e887aae5b7b1"
+  ],
+  "visemeFrameHex": "120000014e7b22766973656d6573223a5b7b22745f6d73223a302c22766973656d65223a227630222c22776569676874223a312e307d2c7b22745f6d73223a3230302c22766973656d65223a227631222c22776569676874223a312e307d2c7b22745f6d73223a3430302c22766973656d65223a227632222c22776569676874223a312e307d2c7b22745f6d73223a3630302c22766973656d65223a227633222c22776569676874223a312e307d2c7b22745f6d73223a3830302c22766973656d65223a227634222c22776569676874223a312e307d2c7b22745f6d73223a313030302c22766973656d65223a227635222c22776569676874223a312e307d2c7b22745f6d73223a313230302c22766973656d65223a227636222c22776569676874223a312e307d2c7b22745f6d73223a313430302c22766973656d65223a227637222c22776569676874223a312e307d5d7d",
+  "visemes": [
+    {
+      "t_ms": 0,
+      "viseme": "v0",
+      "weight": 1.0
+    },
+    {
+      "t_ms": 200,
+      "viseme": "v1",
+      "weight": 1.0
+    },
+    {
+      "t_ms": 400,
+      "viseme": "v2",
+      "weight": 1.0
+    },
+    {
+      "t_ms": 600,
+      "viseme": "v3",
+      "weight": 1.0
+    },
+    {
+      "t_ms": 800,
+      "viseme": "v4",
+      "weight": 1.0
+    },
+    {
+      "t_ms": 1000,
+      "viseme": "v5",
+      "weight": 1.0
+    },
+    {
+      "t_ms": 1200,
+      "viseme": "v6",
+      "weight": 1.0
+    },
+    {
+      "t_ms": 1400,
+      "viseme": "v7",
+      "weight": 1.0
+    }
+  ]
+}
