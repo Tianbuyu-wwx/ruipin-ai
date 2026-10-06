@@ -56,6 +56,7 @@ describe("loadPrefs", () => {
       llmBaseUrl: "https://api.example.com",
       llmApiKey: "sk-roundtrip",
       llmModel: "deepseek-chat",
+      position: "后端工程师",
     };
     savePrefs(store, prefs);
     expect(loadPrefs(store)).toEqual(prefs);

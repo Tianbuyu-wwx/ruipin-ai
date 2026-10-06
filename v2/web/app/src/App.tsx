@@ -1,22 +1,36 @@
 /**
- * 应用容器（方案 §2.2 `<InterviewApp>` 的最小实现）。
+ * 应用容器（mockup 五舞台的产品化装配）。
  *
- * 装配：ConsentDialog → InterviewRoom → ReportView，并把 SocketClient / AudioPlayer
- * 与事件溯源 store 连起来。**不造假数据**：拿不到后端就如实显示"未连接/无题目"，
- * 音频不可用就走纯文本（`AudioPlayer.textOnly`）。
+ * 舞台：landing → prepare → room → closing → report，settings 可从 landing /
+ * prepare 进入。SocketClient / AudioPlayer / 事件溯源 store 的接线保持不变——
+ * 只换了视图层，协议与状态逻辑不动。
+ *
+ * **不造假数据**：拿不到后端就如实显示"未连接/无题目"，音频不可用就走纯文本。
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AudioPlayer } from "./avatar/audioPlayer";
-import { ConsentDialog } from "./components/ConsentDialog";
+import { Closing } from "./components/Closing";
 import { InterviewRoom } from "./components/InterviewRoom";
+import { Landing } from "./components/Landing";
+import { Prepare } from "./components/Prepare";
 import { ReportView } from "./components/ReportView";
 import { SettingsPanel } from "./components/SettingsPanel";
-import { type ConsentFlags, DEFAULT_CONSENT, toConsentPayload } from "./consent/logic";
+import { type ConsentFlags, toConsentPayload } from "./consent/logic";
 import { SocketClient, type SocketStatus } from "./net/socket";
-import { answerCommit, answerText, consentGrant, controlEnd, controlSkip, sessionCreate } from "./protocol/messages";
-import { type Prefs, loadPrefs, resolveWsUrl } from "./settings/prefs";
+import {
+  answerCommit,
+  answerText,
+  consentGrant,
+  controlBargeIn,
+  controlEnd,
+  controlSkip,
+  sessionCreate,
+} from "./protocol/messages";
+import { type Prefs, loadPrefs } from "./settings/prefs";
 import { useInterviewStore } from "./store/interviewStore";
+
+type Stage = "landing" | "prepare" | "settings" | "room" | "closing" | "report";
 
 /** 取本机存储；被禁用（隐私模式）或不存在时返回 null，设置层会回落默认。 */
 function safeStorage(): Storage | null {
@@ -44,22 +58,27 @@ function buildWsUrl(prefs: Prefs): string {
   const fromQuery =
     typeof location !== "undefined" ? new URLSearchParams(location.search).get("token") : null;
   const effective = fromQuery ? { ...prefs, token: fromQuery } : prefs;
-  return resolveWsUrl(effective, fromEnv, page);
+  const override = effective.wsUrl.trim();
+  const base =
+    override || fromEnv?.trim() || (page ? `ws://${page.host}/ws` : "ws://127.0.0.1:8787/ws");
+  const token = effective.token.trim();
+  if (!token) return base;
+  return `${base}${base.includes("?") ? "&" : "?"}token=${encodeURIComponent(token)}`;
 }
 
 export function App() {
+  const events = useInterviewStore((s) => s.events);
   const derived = useInterviewStore((s) => s.derived);
   const appendEvent = useInterviewStore((s) => s.appendEvent);
-  const [phase, setPhase] = useState<"consent" | "interview" | "settings">("consent");
+  const [stage, setStage] = useState<Stage>("landing");
   const [status, setStatus] = useState<SocketStatus>("idle");
-  const [position, setPosition] = useState("");
-  const [consent, setConsent] = useState<ConsentFlags | null>(null);
-  // 本机偏好：挂载时读一次；设置页保存并返回后立即重读（改动当场生效）。
-  const [prefs, setPrefs] = useState<Prefs>(() => loadPrefs(safeStorage()));
+  const [sessionStartedAt, setSessionStartedAt] = useState<number | null>(null);
 
   const socketRef = useRef<SocketClient | null>(null);
   const playerRef = useRef<AudioPlayer | null>(null);
   const lastSeqRef = useRef(0);
+  // 本机偏好：挂载时读一次；设置页保存并返回后立即重读（改动当场生效）。
+  const [prefs, setPrefs] = useState<Prefs>(() => loadPrefs(safeStorage()));
 
   useEffect(() => {
     return () => {
@@ -68,8 +87,17 @@ export function App() {
     };
   }, []);
 
-  const startSession = (flags: ConsentFlags) => {
-    setConsent(flags);
+  const endSession = () => {
+    socketRef.current?.close();
+    socketRef.current = null;
+    playerRef.current?.dispose();
+    playerRef.current = null;
+    setSessionStartedAt(null);
+  };
+
+  const startSession = (flags: ConsentFlags, pos: string) => {
+    useInterviewStore.getState().reset();
+    lastSeqRef.current = 0;
     const player = new AudioPlayer();
     playerRef.current = player;
     const socket = new SocketClient({
@@ -93,60 +121,92 @@ export function App() {
     });
     socketRef.current = socket;
     socket.connect();
-    socket.send(sessionCreate({ position, adaptive: false, physioEnabled: flags.camera && flags.physiology }));
+    socket.send(
+      sessionCreate({ position: pos, adaptive: false, physioEnabled: flags.camera && flags.physiology }),
+    );
     socket.send(consentGrant(toConsentPayload(flags)));
-    setPhase("interview");
+    setSessionStartedAt(Date.now() / 1000);
+    setStage("room");
   };
 
   const timeline = useMemo(() => derived.visemes, [derived.visemes]);
 
-  if (phase === "settings") {
+  if (stage === "landing") {
     return (
-      <div className="app">
+      <div className="app-landing">
+        <Landing onStart={() => setStage("prepare")} onOpenSettings={() => setStage("settings")} />
+      </div>
+    );
+  }
+
+  if (stage === "settings") {
+    return (
+      <div className="app-settings">
         <SettingsPanel
           initial={prefs}
           storage={safeStorage()}
           onBack={() => {
             setPrefs(loadPrefs(safeStorage()));
-            setPhase("consent");
+            setStage("landing");
           }}
         />
       </div>
     );
   }
 
-  if (phase === "consent") {
+  if (stage === "prepare") {
     return (
-      <div className="app">
-        <ConsentDialog
+      <div className="app-prepare">
+        <Prepare
           initial={{
-            ...DEFAULT_CONSENT,
+            base: false,
             camera: prefs.presetCamera || prefs.presetPhysiology,
             physiology: prefs.presetPhysiology,
             screen: prefs.presetScreen,
           }}
-          onGrant={startSession}
-          onDecline={() => undefined}
+          initialPosition={prefs.position}
+          onStart={startSession}
+          onBack={() => setStage("landing")}
+          onOpenSettings={() => setStage("settings")}
         />
-        <label className="position-input">
-          应聘岗位（可选）：
-          <input value={position} onChange={(e) => setPosition(e.target.value)} placeholder="如：后端工程师" />
-        </label>
-        <button type="button" className="settings-entry" onClick={() => setPhase("settings")}>
-          设置
-        </button>
       </div>
     );
   }
 
+  if (stage === "closing") {
+    return (
+      <div className="app-closing">
+        <Closing
+          nTurns={Object.keys(derived.turns).length}
+          nBufferTurns={Object.values(derived.turns).filter((t) => !t.scored).length}
+          onOpenReport={() => setStage("report")}
+          onExit={() => {
+            endSession();
+            setStage("landing");
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (stage === "report") {
+    return (
+      <div className="app-report">
+        <ReportView report={derived.report} />
+      </div>
+    );
+  }
+
+  // stage === "room"
   return (
-    <div className="app">
+    <div className="app-room">
       <InterviewRoom
         derived={derived}
         status={status}
         timeline={timeline}
         player={playerRef.current}
-        recordingAvailable={false}
+        events={events}
+        sessionStartedAt={sessionStartedAt}
         onCommitAnswer={(text) => {
           const socket = socketRef.current;
           if (!socket) return;
@@ -154,18 +214,12 @@ export function App() {
           socket.send(answerCommit());
         }}
         onSkip={() => socketRef.current?.send(controlSkip())}
-        onEnd={() => socketRef.current?.send(controlEnd())}
+        onEnd={() => {
+          socketRef.current?.send(controlEnd());
+          setStage("closing");
+        }}
+        onInterrupt={() => socketRef.current?.send(controlBargeIn())}
       />
-      {derived.report ? (
-        <div className="report-overlay">
-          <ReportView report={derived.report} />
-        </div>
-      ) : null}
-      {consent && !consent.camera ? (
-        <p className="muted consent-echo" role="note">
-          本次未开启摄像头：视频/生理维度不计入，其余维度按权重重分配，总分可比。
-        </p>
-      ) : null}
     </div>
   );
 }

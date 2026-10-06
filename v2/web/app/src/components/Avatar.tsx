@@ -90,11 +90,11 @@ export function Avatar({
         height={height}
         viewBox="0 0 200 200"
       >
-        <ellipse cx="100" cy="96" rx="58" ry="66" fill="#e8eef7" stroke="#94a3b8" strokeWidth="2" />
+        <ellipse cx="100" cy="96" rx="58" ry="66" fill="var(--accent-soft, #E6EFEB)" stroke="var(--accent-line, #B9D2C9)" strokeWidth="2" />
         <circle cx="78" cy="84" r="6" fill="#334155" />
         <circle cx="122" cy="84" r="6" fill="#334155" />
         <path ref={browRef} d="M64 66 Q78 58 92 66 M108 66 Q122 58 136 66" stroke="#334155" strokeWidth="3" fill="none" />
-        <ellipse ref={mouthRef} cx="100" cy="128" rx="20" ry="6" fill="#7c3aed" />
+        <ellipse ref={mouthRef} cx="100" cy="128" rx="20" ry="6" fill="var(--accent, #1F5F52)" />
       </svg>
       {caption ? (
         <figcaption className="avatar-caption" aria-live="polite">

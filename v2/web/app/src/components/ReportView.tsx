@@ -1,11 +1,10 @@
 /**
- * 报告页（方案 §3.4 红线 + §12.6）。
+ * 报告页（mockup 舞台 5 的产品化）。
  *
- * 关键约束：
- * - `report.available=false` ⇒ **不出分**，只给原因（`reportScoreText` 保证不出现数字）。
- * - 生理维度不可用 ⇒ 显示"未计入（原因：…）"，**绝不显示任何数字**
- *   （对应后端"测不准 = 不计入"）；并展示 `counterfactuals` 的"关闭生理模块后总分是多少"。
- * - 权重重分配可视化：让用户看到"某维度没算，权重还给了其他维度，总分未被压低"。
+ * 红线不变：
+ * - `report.available=false` ⇒ **不出分**，verdict 只有解释文字，页面不出现任何分数数字。
+ * - 生理维度不可用 ⇒ "未评"条形 + 原因文字（"测不准 = 不计入"，不扣分）。
+ * - 反事实（去掉某一维的总分）用 note 呈现，数字来自服务端，不本地造。
  */
 
 import { counterfactualText, physioScoreText, reportScoreText } from "../report/parse";
@@ -19,10 +18,13 @@ export interface ReportViewProps {
 export function ReportView({ report }: ReportViewProps) {
   if (!report) {
     return (
-      <section className="report" aria-labelledby="report-heading">
-        <h1 id="report-heading">面试报告</h1>
-        <p role="status">报告尚未生成。</p>
-      </section>
+      <div className="wrap report">
+        <div className="report-body">
+          <p className="rep-empty" role="status">
+            报告尚未生成。
+          </p>
+        </div>
+      </div>
     );
   }
 
@@ -31,77 +33,125 @@ export function ReportView({ report }: ReportViewProps) {
     (k) => k in report.dims || (k === PHYSIO_DIM && physioEnabled),
   );
   const counterfactualKeys = Object.keys(report.counterfactuals);
+  const scoreText = reportScoreText(report);
 
   return (
-    <section className="report" aria-labelledby="report-heading">
-      <h1 id="report-heading">面试报告</h1>
-
-      <div className={`report-score ${report.available ? "ok" : "unavailable"}`}>
-        <div className="total" role="status" aria-live="polite">
-          {reportScoreText(report)}
+    <div className="wrap report">
+      <nav className="toc">
+        <div className="t">目录</div>
+        <a href="#rep-head">总览</a>
+        <a href="#rep-dims">各维度</a>
+        <a href="#rep-physio">生理维度</a>
+        {counterfactualKeys.length > 0 ? <a href="#rep-counter">去掉某一维</a> : null}
+        <div className="meta">
+          评分版本 {report.rubricVersion}
+          <br />
+          计分 {report.nScoredTurns} 轮 / 缓冲 {report.nBufferTurns} 轮
         </div>
-        {report.available && report.level ? <div className="level">等级：{report.level}</div> : null}
-      </div>
+      </nav>
 
-      <h2>维度得分</h2>
-      <table className="dims">
-        <caption className="visually-hidden">各评分维度得分与生效权重</caption>
-        <thead>
-          <tr>
-            <th scope="col">维度</th>
-            <th scope="col">得分</th>
-            <th scope="col">生效权重</th>
-          </tr>
-        </thead>
-        <tbody>
-          {dimKeys.map((k) => (
-            <tr key={k}>
-              <th scope="row">{dimLabel(k)}</th>
-              <td>{k in report.dims ? report.dims[k].toFixed(1) : "未计入"}</td>
-              <td>{((report.effectiveWeights[k] ?? 0) * 100).toFixed(1)}%</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="report-body">
+        <header className="rep-head" id="rep-head">
+          <h1>这份报告能信几分</h1>
+          <p className="sub">
+            {report.available
+              ? "结论来自下面这些计分轮次。每一项分数怎么来的、哪几项没算，都在各节里写明。"
+              : "这次没有给出总分。原因写在下面。"}
+          </p>
+        </header>
 
-      <h2>生理维度</h2>
-      <p className="physio-status" data-available={report.physio?.available ? "true" : "false"}>
-        {physioScoreText(report.physio, physioEnabled)}
-      </p>
-      {report.physio && report.physio.available ? (
-        <p className="muted">
-          有效事件 {report.physio.nValid} 个；权重上限 8%，实得权重{" "}
-          {(report.physio.weightApplied * 100).toFixed(1)}%。
-        </p>
-      ) : null}
+        <div className="verdict">
+          <div>
+            <div className="grade" data-unavailable={report.available ? "false" : "true"}>
+              {report.available ? (
+                <>
+                  可以当参考 <span>不适合排名</span>
+                </>
+              ) : (
+                "这次不出分"
+              )}
+            </div>
+            <p className="expl">{scoreText}</p>
+            {!report.available && report.reason ? (
+              <p className="expl">原因：{report.reason}</p>
+            ) : null}
+          </div>
+          {report.available ? (
+            <div className="total">
+              <span className="n">{report.score?.toFixed(1) ?? "—"}</span>
+              <div className="cap">计分轮次总分{report.level ? ` · 等级 ${report.level}` : ""}</div>
+            </div>
+          ) : null}
+        </div>
 
-      {counterfactualKeys.length > 0 ? (
-        <>
-          <h2>反事实（关闭某维度后的总分）</h2>
-          <ul className="counterfactuals">
-            {counterfactualKeys.map((k) => (
-              <li key={k}>
-                若剔除「{dimLabel(k)}」：{counterfactualText(report.counterfactuals[k])}
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : null}
+        <section className="block" id="rep-dims">
+          <h2>各维度</h2>
+          <p className="intro">条越长分越高。灰色的项这轮没算，不加分也不扣分。</p>
+          {dimKeys.map((k) => {
+            const scored = k in report.dims;
+            const value = scored ? report.dims[k] : null;
+            return (
+              <div className="dim" key={k} data-muted={scored ? "false" : "true"}>
+                <span className="nm">{dimLabel(k)}</span>
+                <span className="bar">
+                  <i style={{ width: `${Math.max(0, Math.min(100, value ?? 0))}%` }}></i>
+                </span>
+                <span className="sc">{value === null ? "未评" : value.toFixed(1)}</span>
+              </div>
+            );
+          })}
+        </section>
 
-      {report.notes.length > 0 ? (
-        <>
-          <h2>评分归因</h2>
-          <ul className="notes">
+        <section className="block" id="rep-physio">
+          <h2>生理维度</h2>
+          <div className={report.physio?.available ? "note" : "note note-warn"}>
+            <h3>{report.physio?.available ? "生理维度参与了评分" : "这一轮没有可用的生理信号"}</h3>
+            {physioScoreText(report.physio, physioEnabled)}
+            {report.physio && report.physio.available ? (
+              <>
+                {" "}有效事件 {report.physio.nValid} 个，权重上限 8%，实得{" "}
+                {(report.physio.weightApplied * 100).toFixed(1)}%。
+              </>
+            ) : null}
+          </div>
+        </section>
+
+        {counterfactualKeys.length > 0 ? (
+          <section className="block" id="rep-counter">
+            <h2>去掉某一维，总分变成多少</h2>
+            <p className="intro">把某一维整个去掉再算一遍，看总分差多少。差得越多，这一维对这次结果影响越大。</p>
+            {counterfactualKeys.map((k) => {
+              const total = report.counterfactuals[k];
+              return (
+                <div className="note" key={k}>
+                  <h3>
+                    去掉{dimLabel(k)}，总分变成{" "}
+                    <span className="fig">{total === null ? "（算不出来）" : total.toFixed(1)}</span>
+                  </h3>
+                  {counterfactualText(total)}
+                </div>
+              );
+            })}
+          </section>
+        ) : null}
+
+        {report.notes.length > 0 ? (
+          <section className="block" id="rep-limit">
+            <h2>口径说明</h2>
             {report.notes.map((n, i) => (
-              <li key={`n-${i}`}>{n}</li>
+              <div className="note" key={`n-${i}`}>
+                {n}
+              </div>
             ))}
-          </ul>
-        </>
-      ) : null}
+          </section>
+        ) : null}
 
-      <p className="muted">
-        口径版本：{report.rubricVersion}；计分轮次 {report.nScoredTurns}，缓冲轮次 {report.nBufferTurns}。
-      </p>
-    </section>
+        <div className="rep-foot">
+          评分版本 {report.rubricVersion}；计分 {report.nScoredTurns} 轮，缓冲 {report.nBufferTurns} 轮
+          <br />
+          分数只用来做参考。哪几轮被规则算法算的、哪些维度没算，上面各节都有标注。
+        </div>
+      </div>
+    </div>
   );
 }

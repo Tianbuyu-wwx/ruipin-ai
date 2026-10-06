@@ -32,6 +32,8 @@ export interface Prefs {
   llmApiKey: string;
   /** AI 评分模型名。 */
   llmModel: string;
+  /** 应聘岗位（会话创建时带给服务端，影响出题方向）。 */
+  position: string;
 }
 
 export const DEFAULT_PREFS: Prefs = {
@@ -43,6 +45,7 @@ export const DEFAULT_PREFS: Prefs = {
   llmBaseUrl: "",
   llmApiKey: "",
   llmModel: "",
+  position: "",
 };
 
 export const PREFS_STORAGE_KEY = "ruipin.prefs.v1";
@@ -93,6 +96,7 @@ export function loadPrefs(storage: PrefsStorage | null): Prefs {
     llmBaseUrl: str(parsed, "llmBaseUrl", DEFAULT_PREFS.llmBaseUrl),
     llmApiKey: str(parsed, "llmApiKey", DEFAULT_PREFS.llmApiKey),
     llmModel: str(parsed, "llmModel", DEFAULT_PREFS.llmModel),
+    position: str(parsed, "position", DEFAULT_PREFS.position),
   };
 }
 

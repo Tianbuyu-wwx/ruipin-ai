@@ -1,15 +1,13 @@
 /**
- * 设置页 —— 集中管理本机可调配置。
+ * 设置页（mockup 设计语言）。
  *
- * 三组设置：
+ * 四组设置：
  *  1. 连接：WS 地址与令牌（留空即跟随默认；令牌只存本机）；
- *  2. 授权预设：下次进入授权页时各可选项的初始勾选（不代替勾选，只省一次点击）；
- *  3. 说明：设置保存到哪、什么时候生效。
+ *  2. 面试选项：应聘岗位默认值、下次进授权页的授权预设；
+ *  3. AI 评分：OpenAI 兼容三项，保存时推送给运行中的服务端；
+ *  4. 说明：数据存在哪、什么时候生效。
  *
- * 纪律：
- * - 改动不即时生效，显式点"保存"才落盘；保存结果用 role=status 明说，不静默；
- * - 地址校验不过就禁用保存，错误原因可读；
- * - 生理信号预设与摄像头预设的依赖关系复用 consent 逻辑（勾生理必须带摄像头）。
+ * 纪律：显式保存才落盘；校验不过禁保存；服务端不可达时明说"未同步"。
  */
 
 import { useState, type FormEvent } from "react";
@@ -38,6 +36,7 @@ interface Draft {
   llmBaseUrl: string;
   llmApiKey: string;
   llmModel: string;
+  position: string;
 }
 
 export function SettingsPanel({ initial, storage, onBack }: SettingsPanelProps) {
@@ -84,6 +83,7 @@ export function SettingsPanel({ initial, storage, onBack }: SettingsPanelProps) 
       llmBaseUrl: draft.llmBaseUrl.trim(),
       llmApiKey: draft.llmApiKey.trim(),
       llmModel: draft.llmModel.trim(),
+      position: draft.position.trim(),
     };
     savePrefs(storage, next);
     setSyncing(true);
@@ -93,7 +93,7 @@ export function SettingsPanel({ initial, storage, onBack }: SettingsPanelProps) 
       setSaved("已保存到本机。服务端现在连不上，AI 评分配置没有同步；服务端起来后再保存一次即可。");
       return;
     }
-    setSaved(`已保存到本机。服务端答复：${sync.message}（对下一场面试生效）`);
+    setSaved(`已保存到本机。服务端答复：${sync.message}`);
   };
 
   const reset = () => {
@@ -106,138 +106,178 @@ export function SettingsPanel({ initial, storage, onBack }: SettingsPanelProps) 
       llmBaseUrl: "",
       llmApiKey: "",
       llmModel: "",
+      position: "",
     });
     setSaved(null);
   };
 
   return (
-    <section className="settings" aria-labelledby="settings-title">
-      <h1 id="settings-title">设置</h1>
-      <p className="settings-intro">这里改的是本机偏好，改动不影响其他人，也不会上传。</p>
+    <div className="wrap">
+      <header className="settings-head">
+        <h1>设置</h1>
+        <p className="lede">
+          这里改的是本机偏好。AI 评分配置保存时会推给正在运行的服务端，其余改动回准备页即生效。
+        </p>
+      </header>
 
       <form onSubmit={submit}>
-        <fieldset>
-          <legend>连接</legend>
-          <label className="settings-field">
-            <span>服务地址</span>
-            <input
-              type="text"
-              value={draft.wsUrl}
-              onChange={(e) => set({ wsUrl: e.target.value })}
-              placeholder="留空则自动（跟随页面域名或构建期配置）"
-              spellCheck={false}
-            />
-          </label>
-          {wsError ? (
-            <p className="settings-error" role="alert">
-              {wsError}
-            </p>
-          ) : null}
-          <label className="settings-field">
-            <span>令牌（可选）</span>
-            <input
-              type="password"
-              value={draft.token}
-              onChange={(e) => set({ token: e.target.value })}
-              placeholder="开发期连接令牌；只保存在本机"
-              autoComplete="off"
-              spellCheck={false}
-            />
-          </label>
-        </fieldset>
+        <div className="settings-body">
+          <div className="card">
+            <h3>连接</h3>
+            <div className="field">
+              <label htmlFor="set-wsurl">服务地址</label>
+              <input
+                id="set-wsurl"
+                type="text"
+                value={draft.wsUrl}
+                onChange={(e) => set({ wsUrl: e.target.value })}
+                placeholder="留空则自动（跟随页面域名或构建期配置）"
+                spellCheck={false}
+              />
+            </div>
+            {wsError ? (
+              <p className="settings-error" role="alert">
+                {wsError}
+              </p>
+            ) : null}
+            <div className="field">
+              <label htmlFor="set-token">令牌（可选）</label>
+              <input
+                id="set-token"
+                type="password"
+                value={draft.token}
+                onChange={(e) => set({ token: e.target.value })}
+                placeholder="开发期连接令牌；只保存在本机"
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </div>
+          </div>
 
-        <fieldset>
-          <legend>授权预设（下次进授权页时的初始勾选）</legend>
-          <label className="settings-check">
-            <input
-              type="checkbox"
-              checked={draft.presetCamera}
-              onChange={(e) => togglePreset("presetCamera", e.target.checked)}
-            />
-            <span>摄像头</span>
-          </label>
-          <label className="settings-check">
-            <input
-              type="checkbox"
-              checked={draft.presetPhysiology}
-              onChange={(e) => togglePreset("presetPhysiology", e.target.checked)}
-            />
-            <span>生理信号分析（会自动带起摄像头）</span>
-          </label>
-          <label className="settings-check">
-            <input
-              type="checkbox"
-              checked={draft.presetScreen}
-              onChange={(e) => togglePreset("presetScreen", e.target.checked)}
-            />
-            <span>共享屏幕</span>
-          </label>
-          <p className="settings-note">
-            预设只是替你先把框勾好，到了授权页仍可以逐项改。参加面试那一项在这里管不了，必须本人当场勾。
-          </p>
-        </fieldset>
-
-        <fieldset>
-          <legend>AI 评分（可选）</legend>
-          <label className="settings-field">
-            <span>服务地址（OpenAI 兼容）</span>
-            <input
-              type="text"
-              value={draft.llmBaseUrl}
-              onChange={(e) => set({ llmBaseUrl: e.target.value })}
-              placeholder="如 https://api.deepseek.com"
-              spellCheck={false}
-            />
-          </label>
-          <label className="settings-field">
-            <span>API Key</span>
-            <input
-              type="password"
-              value={draft.llmApiKey}
-              onChange={(e) => set({ llmApiKey: e.target.value })}
-              placeholder="保存时推送给服务端；只存本机，不进日志"
-              autoComplete="off"
-              spellCheck={false}
-            />
-          </label>
-          <label className="settings-field">
-            <span>模型名</span>
-            <input
-              type="text"
-              value={draft.llmModel}
-              onChange={(e) => set({ llmModel: e.target.value })}
-              placeholder="如 deepseek-chat"
-              spellCheck={false}
-            />
-          </label>
-          <p className="settings-note">
-            三项都填才启用 AI 评分，都留空则用规则评分。保存时会推送给正在运行的服务端，
-            对下一场面试生效；AI 评分失败时该轮自动降级为规则评分，报告里会写明。
-          </p>
-          {llmError ? (
-            <p className="settings-error" role="alert">
-              {llmError}
+          <div className="card">
+            <h3>面试选项</h3>
+            <div className="field" style={{ marginTop: 12 }}>
+              <label htmlFor="set-position">应聘岗位（默认值）</label>
+              <input
+                id="set-position"
+                type="text"
+                value={draft.position}
+                onChange={(e) => set({ position: e.target.value })}
+                placeholder="例如：后端工程师"
+                spellCheck={false}
+              />
+              <p className="hint">开始面试前还可以在准备页临时改。</p>
+            </div>
+            <div style={{ marginTop: 8 }}>
+              <div className="check-row">
+                <span className="lbl">摄像头预设</span>
+                <button
+                  type="button"
+                  className="switch"
+                  role="switch"
+                  aria-checked={draft.presetCamera}
+                  aria-label="摄像头预设"
+                  onClick={() => togglePreset("presetCamera", !draft.presetCamera)}
+                >
+                  <i></i>
+                </button>
+              </div>
+              <div className="check-row">
+                <span className="lbl">生理信号预设（会带起摄像头）</span>
+                <button
+                  type="button"
+                  className="switch"
+                  role="switch"
+                  aria-checked={draft.presetPhysiology}
+                  aria-label="生理信号预设"
+                  onClick={() => togglePreset("presetPhysiology", !draft.presetPhysiology)}
+                >
+                  <i></i>
+                </button>
+              </div>
+              <div className="check-row">
+                <span className="lbl">共享屏幕预设</span>
+                <button
+                  type="button"
+                  className="switch"
+                  role="switch"
+                  aria-checked={draft.presetScreen}
+                  aria-label="共享屏幕预设"
+                  onClick={() => togglePreset("presetScreen", !draft.presetScreen)}
+                >
+                  <i></i>
+                </button>
+              </div>
+            </div>
+            <p className="settings-note">
+              预设只是替你先把授权项勾好，到了准备页仍可以逐项改。参加面试那一项管不了，必须本人当场确认。
             </p>
-          ) : null}
-        </fieldset>
+          </div>
+
+          <div className="card">
+            <h3>AI 评分（可选）</h3>
+            <div className="field" style={{ marginTop: 12 }}>
+              <label htmlFor="set-llmurl">服务地址（OpenAI 兼容）</label>
+              <input
+                id="set-llmurl"
+                type="text"
+                value={draft.llmBaseUrl}
+                onChange={(e) => set({ llmBaseUrl: e.target.value })}
+                placeholder="如 https://api.deepseek.com"
+                spellCheck={false}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="set-llmkey">API Key</label>
+              <input
+                id="set-llmkey"
+                type="password"
+                value={draft.llmApiKey}
+                onChange={(e) => set({ llmApiKey: e.target.value })}
+                placeholder="保存时推送给服务端；只存本机，不进日志"
+                autoComplete="off"
+                spellCheck={false}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="set-llmmodel">模型名</label>
+              <input
+                id="set-llmmodel"
+                type="text"
+                value={draft.llmModel}
+                onChange={(e) => set({ llmModel: e.target.value })}
+                placeholder="如 deepseek-chat"
+                spellCheck={false}
+              />
+            </div>
+            <p className="settings-note">
+              三项都填才启用 AI 评分，都留空则用规则评分。AI 评分失败时该轮自动降级为规则评分，报告里会写明。
+            </p>
+            {llmError ? (
+              <p className="settings-error" role="alert">
+                {llmError}
+              </p>
+            ) : null}
+          </div>
+        </div>
 
         <div className="settings-actions">
-          <button type="submit" className="primary" disabled={!canSave || syncing}>
+          <button type="submit" className="btn btn-primary" disabled={!canSave || syncing}>
             {syncing ? "保存中…" : "保存"}
           </button>
-          <button type="button" onClick={reset}>
+          <button type="button" className="btn btn-quiet" onClick={reset}>
             还原默认
           </button>
-          <button type="button" onClick={onBack}>
+          <button type="button" className="btn btn-plain" onClick={onBack}>
             返回
           </button>
+          {saved ? (
+            <p className="settings-saved" role="status">
+              {saved}
+            </p>
+          ) : null}
         </div>
-        {saved ? (
-          <p className="settings-saved" role="status">
-            {saved}
-          </p>
-        ) : null}
       </form>
-    </section>
+    </div>
   );
 }
