@@ -14,7 +14,6 @@ import type { AudioPlayer } from "../avatar/audioPlayer";
 import type { SocketStatus } from "../net/socket";
 import { degradationBanner } from "../store/selectors";
 import type { DerivedState, ServerEvent, VisemeEvent } from "../store/types";
-import { Avatar } from "./Avatar";
 
 /** FSM 状态 → 轮次身份（驱动波形动画与控制带可见性）。 */
 function turnOf(state: DerivedState["fsm"]["state"]): "speaking" | "yours" | "processing" | "idle" {
@@ -79,8 +78,6 @@ const WAVE_BARS = 30;
 export function InterviewRoom({
   derived,
   status: _status,
-  timeline,
-  player = null,
   events = [],
   sessionStartedAt = null,
   onCommitAnswer,
@@ -88,6 +85,8 @@ export function InterviewRoom({
   onEnd,
   onInterrupt,
 }: InterviewRoomProps) {
+  // timeline / player 不再被解构：形象占位移除，但 props 通路保留（口型
+  // 时间线仍在 App 层解析），下一阶段接形象时直接取回。
   const [draft, setDraft] = useState("");
   const [tab, setTab] = useState<"transcript" | "evals" | "log">("transcript");
   const [railOpen, setRailOpen] = useState(true);
@@ -156,13 +155,7 @@ export function InterviewRoom({
                 <b key={i} style={{ "--peak": 2.5 + ((i * 13) % 7) * 0.6 } as React.CSSProperties} />
               ))}
             </div>
-            {/* 口型时间线驱动的小型形象（可用时）；不可用则只留波形，不摆拍假人 */}
-            <Avatar
-              timeline={timeline}
-              player={player}
-              speaking={turn === "speaking"}
-              caption={question?.text ?? ""}
-            />
+            {/* 形象占位已移除（下一阶段做）：口型时间线仍在解析，音频照常播放 */}
           </div>
 
           <div className="prompt">
