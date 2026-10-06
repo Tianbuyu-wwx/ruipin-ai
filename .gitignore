@@ -16,7 +16,7 @@ env/
 
 # ---- Node / 前端构建 ----
 node_modules/
-v2/web/app/dist/
+web/app/dist/
 *.local
 
 # ---- 模型权重与本地数据（体积大 / 用户隐私，绝不入库）----

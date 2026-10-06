@@ -23,8 +23,8 @@ import pytest
 
 from ruipin.ports import WordTiming
 
-_V2_ROOT = Path(__file__).resolve().parents[1]
-_TOOL_PATH = _V2_ROOT / "tools" / "aligner_ab.py"
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+_TOOL_PATH = _REPO_ROOT / "tools" / "aligner_ab.py"
 
 
 def _load_tool():

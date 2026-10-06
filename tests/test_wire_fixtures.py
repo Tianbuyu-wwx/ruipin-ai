@@ -18,8 +18,8 @@ from pathlib import Path
 
 import pytest
 
-_V2_ROOT = Path(__file__).resolve().parents[1]
-_TOOL_PATH = _V2_ROOT / "tools" / "export_wire_fixtures.py"
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+_TOOL_PATH = _REPO_ROOT / "tools" / "export_wire_fixtures.py"
 
 
 def _load_tool():

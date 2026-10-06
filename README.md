@@ -11,7 +11,7 @@ AI 模拟面试系统：真人节奏的语音问答、规则/LLM 双路评分、
 - **实时面试链路**：文本帧 JSON + 二进制音频/口型帧复用一条 WebSocket；下行帧统一 seq 编号，断线重连按 `last_seq` 重放，前端按 seq 去重。
 - **评分**：LLM（OpenAI 兼容接口）优先，失败该轮自动降级规则评分（provider=rubric），降级原因随帧下发并在界面挂横幅；置信度不足的维度在聚合时权重归零，报告只给"可以当参考，不适合排名"口径的结论，不出伪精确排名。
 - **数字人语音**：TTS 走 Qwen3-TTS 12Hz（HTTP 整段 WAV），词级时间戳来自 Qwen3-ForcedAligner；口型时间线按 viseme 二进制帧下发。对齐失败时音频照常交付、报告标注 `timing_source=none`。
-- **端侧 rPPG**：摄像头画面在浏览器本地提取脉搏相关统计量（`v2/web/ppg/`，零运行时依赖），原始视频不上传；生理信号属敏感个人信息，单独勾选同意。
+- **端侧 rPPG**：摄像头画面在浏览器本地提取脉搏相关统计量（`web/ppg/`，零运行时依赖），原始视频不上传；生理信号属敏感个人信息，单独勾选同意。
 - **授权与合规**：摄像头 / 生理信号 / 屏幕共享分项同意（PIPL 口径），拒绝任何可选项都不影响面试与总分可比性（未采集维度按权重重分配）。
 - **设置页**：服务地址、令牌、授权预设、AI 评分配置集中管理，localStorage 持久化，只存本机。
 
@@ -22,7 +22,6 @@ AI 模拟面试系统：真人节奏的语音问答、规则/LLM 双路评分、
 ### 1. 启动后端
 
 ```bash
-cd v2
 python -m venv .venv
 .venv/Scripts/pip install websockets httpx pytest   # Linux/macOS 用 .venv/bin/
 
@@ -34,7 +33,7 @@ PYTHONPATH=src .venv/Scripts/python -m ruipin.adapters.deploy --port 8787 --toke
 ### 2. 启动前端
 
 ```bash
-cd v2/web/app
+cd web/app
 npm ci
 npm run dev
 ```
@@ -74,18 +73,17 @@ npm run dev
 ## 目录结构
 
 ```
-v2/
-├─ src/ruipin/
+├─ src/ruipin/          后端 Python 包
 │  ├─ transport/        网关(seq/重放/限流)、会话循环、桥接
 │  ├─ orchestrator/     轮次调度（每题一回合）
 │  ├─ scoring/          规则评分(rubric)、聚合门控
 │  ├─ adapters/         LLM/TTS/装配：deploy 入口、OpenAI 兼容评估、Qwen3-TTS
-│  ├─ perception/ …     感知、生理、安全、留存等域模块
+│  └─ perception/ …     感知、生理、安全、留存等域模块
 ├─ tests/               后端测试（pytest，3200+ 用例，含 WS 契约与端点集成）
-├─ web/app/             前端（React 18 + Vite + zustand，自写 CSS）
+├─ web/app/             前端（React 18 + Vite + zustand）
 ├─ web/ppg/             端侧 rPPG（TypeScript，Node 内置 test runner）
-├─ web/mockup/          纯前端示意图（非产品代码）
-└─ tools/               对齐器验收等开发工具
+├─ web/mockup/          前端设计稿（视觉定稿，非产品代码）
+└─ tools/               对齐器验收、契约夹具导出等开发工具
 ```
 
 ## 配置
@@ -105,21 +103,21 @@ v2/
 
 ```bash
 # 后端全量（须带 PYTHONPATH=src）
-cd v2 && PYTHONPATH=src python -m pytest
+PYTHONPATH=src python -m pytest
 
 # 前端类型检查 + 单测
-cd v2/web/app
+cd web/app
 npm run typecheck && npm test
 
 # 端侧 rPPG
-cd v2/web && node --experimental-strip-types --test "ppg/*.test.ts"
+cd web && node --experimental-strip-types --test "ppg/*.test.ts"
 ```
 
 CI（GitHub Actions）跑以上三组，见 `.github/workflows/ci.yml`。
 
 ## 入库范围
 
-仓库只收代码与 CI 配置。以下内容**不入库**（.gitignore 已排除）：`base_model/`（模型权重）、`data/*.db`（用户数据）、`.secret_key`（本机测试密钥）、`.workbuddy/`、日志、覆盖率产物、`v2/.venv`、`node_modules`、`docs/`（设计文档留在本地）。
+仓库只收代码与 CI 配置。以下内容**不入库**（.gitignore 已排除）：`.venv/`、`node_modules/`、`web/app/dist/`、`.secret_key`（本机测试密钥）、`.workbuddy/`、日志、覆盖率产物、`docs/`（设计文档留在本地）。
 
 ## 状态
 

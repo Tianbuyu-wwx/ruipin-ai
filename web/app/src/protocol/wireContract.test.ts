@@ -8,8 +8,8 @@
  * ——任一处改动，**两侧都不会红**，而用户看到的是"没声音"或"口型乱动"。
  *
  * 这里喂进去的字节**不是手写样例**，而是后端真实产物导出的夹具
- * （`wireFixtures.json`，由 `v2/tools/export_wire_fixtures.py` 生成，
- *  `v2/tests/test_wire_fixtures.py` 保证它不过期）。
+ * （`wireFixtures.json`，由 `tools/export_wire_fixtures.py` 生成，
+ *  `tests/test_wire_fixtures.py` 保证它不过期）。
  *
  * 读法：夹具过期 → 后端那侧先红；夹具更新后本文件红了 → 说明这次改动
  * 真的动了线序，前端必须同步跟进。两侧任一掉队都会立刻被发现。
